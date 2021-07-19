@@ -1,0 +1,35 @@
+
+
+datasource db{
+    provider ="postgresql"
+    url = env("DATABASE_URL")
+}
+generator client {
+  provider      = "prisma-client-js"
+  previewFeatures = ["referentialActions"]
+}
+model User{
+    id Int @id @default(autoincrement()) 
+    userName String?  // 아이디
+    password String? // 패스워드
+    nickName String // 사용자 닉네임
+    email String? // 사용자 이메일
+    PhoneNumber String?  // 사용자 핸드폰 번호
+    avatar String?  //프로필 사진
+    authUser AuthUser? // 1-1 relations
+    gender String?  //성별
+    ageRange String? //나이대
+    uniqueValue String?  //OAuth 고유값
+    createdAt DateTime @default(now()) // 가입날짜
+    updatedAt DateTime @updatedAt  // 업데이트 날짜
+}
+model AuthUser{
+    id Int @id @default(autoincrement()) 
+    userId Int 
+    user User @relation(fields: [userId],references:[id])
+    oauth_provider String  // 공급자
+    accessToken String  
+    refreshToken String
+    createdAt DateTime @default(now()) // 가입날짜
+    updatedAt DateTime @updatedAt  // 업데이트 날짜
+}
