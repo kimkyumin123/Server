@@ -10,17 +10,83 @@ generator client {
 }
 model User{
     id Int @id @default(autoincrement()) 
-    userName String?  // 아이디
+    userName String? @unique  // 아이디  중복불가
     password String? // 패스워드
-    nickName String // 사용자 닉네임
+    nickName String  @unique // 사용자 닉네임 중복불가
     email String? // 사용자 이메일
-    PhoneNumber String?  // 사용자 핸드폰 번호
+    //PhoneNumber String?  // 사용자 핸드폰 번호
     avatar String?  //프로필 사진
+    bio String // 자기소개
     authUser AuthUser? // 1-1 relations
     gender String?  //성별
     ageRange String? //나이대
     uniqueValue String?  //OAuth 고유값
     createdAt DateTime @default(now()) // 가입날짜
+    updatedAt DateTime @updatedAt  // 업데이트 날짜
+    reviews Review[]
+    places Place[]
+    suggestions Suggestion[]
+}
+model Suggestion{
+    id Int @id @default(autoincrement()) 
+    like Int
+    unLike Int
+    placeId Int
+    place Place @relation(fields: [placeId],references:[id])
+    reviewId Int
+    review Review @relation(fields:[reviewId], references:[id])
+    userId Int
+    user User @relation(fields: [userId],references:[id])
+    createdAt DateTime @default(now()) //생성날짜
+    updatedAt DateTime @updatedAt  // 업데이트 날짜
+}
+model Review{
+    id Int @id @default(autoincrement()) 
+    createdAt DateTime @default(now()) //생성날짜
+    updatedAt DateTime @updatedAt  // 업데이트 날짜
+    title String
+    content String
+    upload String? //일단 임시 추후 upload로 변경
+    userId Int
+    user User @relation(fields: [userId],references:[id],onDelete:Cascade,onUpdate: Cascade)
+    comments Comment[] 
+    suggestions Suggestion[]
+    placeId Int
+    place Place @relation(fields: [userId],references:[id],onDelete:Cascade,onUpdate:Cascade)
+    hashtags HashTag[]
+}
+model Place{
+    id Int @id @default(autoincrement()) 
+    createdAt DateTime @default(now()) //생성날짜
+    updatedAt DateTime @updatedAt  // 업데이트 날짜
+    title String //장소이름
+    address String //주소 (도로명주소?번지주소?)
+    zipCode Int? //우편번호
+    x Int //x좌표
+    y Int //y좌표
+    category String?
+    userId Int //장소 등록자
+    user User @relation(fields: [userId],references:[id],onDelete:Cascade,onUpdate: Cascade)
+    suggestions Suggestion[]
+    reviews Review[] 
+}
+model Comment{
+    id Int @id @default(autoincrement()) 
+    createdAt DateTime @default(now()) //생성날짜
+    updatedAt DateTime @updatedAt  // 업데이트 날짜
+    payload String
+    reviewId Int
+    review Review @relation(fields: [reviewId],references:[id])
+    hashtags HashTag[]
+}
+model HashTag{
+    id Int @id @default(autoincrement()) 
+    hashtag String @unique
+    comments Comment[] //connectORCreate
+    reviews Review[]  //connectORCreate
+
+    
+    createdAt DateTime @default(now()) //생성날짜
     updatedAt DateTime @updatedAt  // 업데이트 날짜
 }
 model AuthUser{
