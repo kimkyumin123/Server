@@ -21,5 +21,6 @@ DBMS- Postgresql
 ORM - Prisma
 
 ## 서버호스팅
-
 AWS - 파악필요
+### 이미지호스팅
+AWS S3
