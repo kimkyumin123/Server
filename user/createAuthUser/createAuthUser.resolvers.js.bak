@@ -1,10 +1,10 @@
 import { token } from "morgan"
 import client from "../../client"
-import { tokenValidation, userProfile } from "../auth/auth.utils"
+import { userProfile } from "../auth/auth.utils"
 
 export default{
     Mutation:{
-        createAuthUser:async(_,{nickName,avatar},{accessToken,refreshToken})=>{
+        createAuthUser:async(_,{nickName,avatar,bio},{accessToken,refreshToken})=>{
             //중복된 닉네임 확인
             const ExistUser=await client.user.findFirst({
                 where:{nickName}
@@ -25,6 +25,7 @@ export default{
                 data:{
                     nickName,
                     uniqueValue:String(tokenData.id),
+                    bio,
                     gender:tokenData.kakao_account.gender,
                     ageRange:dataSlice, //Front에서 20대~ 형식으로 전달해
                     ...(avatar&&{avatar:avatar})

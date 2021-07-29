@@ -2,7 +2,7 @@ import client from "../../client"
 import bcrypt from "bcrypt"
 export default{
     Mutation:{
-        createUser:async(_,{userName,nickName,email,avatar,password,PhoneNumber},__)=>{
+        createUser:async(_,{bio,userName,nickName,email,avatar,password},__)=>{
             const user = await client.user.findFirst({
                 where:{
                     OR:[
@@ -23,18 +23,17 @@ export default{
                 }
             }
             const uglyPassword= await bcrypt.hash(password, 10)
-            console.log(uglyPassword)
             const newUser = await client.user.create({
                 data:{
                     userName,
                     email,
-                    PhoneNumber,
                     avatar,
                     password:uglyPassword,
-                    nickName 
+                    nickName,
+                    bio
                 }
             })
-            console.log(newUser)
+            
             return {
                 ok:true,
 

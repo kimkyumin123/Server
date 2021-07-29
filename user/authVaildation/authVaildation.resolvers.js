@@ -1,12 +1,12 @@
 
 
-import { tokenUpdate, tokenValidation, userProfile } from "../auth/auth.utils"
+import { tokenUpdate, tokenVaildation, userProfile } from "../auth/auth.utils"
 
 
 export default{
     Mutation:{
         authVaildation: async(_,__,{accessToken,refreshToken})=>{
-           const result= await tokenValidation(accessToken) //유효성검사
+           const result= await tokenVaildation(accessToken) //유효성검사
            
            if(result.code){ //유효성검사 실패
             // -1	카카오 플랫폼 서비스의 일시적 내부 장애 상태
@@ -34,7 +34,7 @@ export default{
             }
            }
            else{         // 토큰 유효성 검사 통과
-            console.log("tests")
+            
             const profileProper=await  userProfile(accessToken)
             const {kakao_account:{age_range,gender,profile:{nickname,profile_image_url}}}=profileProper
             console.log(profileProper)

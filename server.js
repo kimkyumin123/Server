@@ -4,15 +4,17 @@ import  {ApolloServer} from "apollo-server-express";
 import {resolvers,typeDefs} from "./schema";
 import logger from 'morgan'
 import {  AccessTokenRequest, authorization ,auth} from './Auth';
+import { getUser } from './user/users.utils';
 
 
 const server = new ApolloServer({
   resolvers,typeDefs,
   context:async({req}) =>{
+    
     return{
-      req,
-    accessToken:req.headers.accesstoken,
-    refreshToken:req.headers.refreshtoken,
+      loggedInUser:await getUser(req.headers.token),
+      accessToken:req.headers.accesstoken,
+      refreshToken:req.headers.refreshtoken,
     
     }
 }

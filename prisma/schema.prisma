@@ -16,8 +16,8 @@ model User{
     email String? // 사용자 이메일
     //PhoneNumber String?  // 사용자 핸드폰 번호
     avatar String?  //프로필 사진
-    bio String // 자기소개
-    authUser AuthUser? // 1-1 relations
+    bio String? // 자기소개
+    // authUser AuthUser? // 1-1 relations
     gender String?  //성별
     ageRange String? //나이대
     uniqueValue String?  //OAuth 고유값
@@ -26,6 +26,8 @@ model User{
     reviews Review[]
     places Place[]
     suggestions Suggestion[]
+    refreshToken String
+    
 }
 model Suggestion{
     id Int @id @default(autoincrement()) 
@@ -50,7 +52,7 @@ model Review{
     userId Int
     user User @relation(fields: [userId],references:[id],onDelete:Cascade,onUpdate: Cascade)
     comments Comment[] 
-    suggestions Suggestion[]
+    suggestions Suggestion?
     placeId Int
     place Place @relation(fields: [userId],references:[id],onDelete:Cascade,onUpdate:Cascade)
     hashtags HashTag[]
@@ -67,7 +69,7 @@ model Place{
     category String?
     userId Int //장소 등록자
     user User @relation(fields: [userId],references:[id],onDelete:Cascade,onUpdate: Cascade)
-    suggestions Suggestion[]
+    suggestions Suggestion?
     reviews Review[] 
 }
 model Comment{
@@ -77,25 +79,24 @@ model Comment{
     payload String
     reviewId Int
     review Review @relation(fields: [reviewId],references:[id])
-    hashtags HashTag[]
+    // hashtags HashTag[]
 }
 model HashTag{
     id Int @id @default(autoincrement()) 
     hashtag String @unique
-    comments Comment[] //connectORCreate
+    //comments Comment[] //connectORCreate
     reviews Review[]  //connectORCreate
-
-    
     createdAt DateTime @default(now()) //생성날짜
     updatedAt DateTime @updatedAt  // 업데이트 날짜
 }
-model AuthUser{
-    id Int @id @default(autoincrement()) 
-    userId Int 
-    user User @relation(fields: [userId],references:[id])
-    oauth_provider String  // 공급자
-    accessToken String  
-    refreshToken String
-    createdAt DateTime @default(now()) // 가입날짜
-    updatedAt DateTime @updatedAt  // 업데이트 날짜
-}
+
+// model AuthUser{
+//     id Int @id @default(autoincrement()) 
+//     userId Int 
+//     user User @relation(fields: [userId],references:[id])
+//     oauth_provider String  // 공급자
+//     accessToken String  
+//     refreshToken String
+//     createdAt DateTime @default(now()) // 가입날짜
+//     updatedAt DateTime @updatedAt  // 업데이트 날짜
+// }
