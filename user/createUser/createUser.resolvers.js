@@ -19,7 +19,7 @@ export default{
             if(user){
                 return{
                     ok:false,
-                    error:"Already In User"
+                    error:process.env.Already_User
                 }
             }
             const uglyPassword= await bcrypt.hash(password, 10)

@@ -1,76 +1,37 @@
 import client from "../../client"
 import { tokenUpdate, tokenVaildation, userProfile } from "../auth/auth.utils"
 import jwt from "jsonwebtoken"
+import { getUser, tokenIssuance } from "../users.utils"
 
 export default{
     Mutation:{
-        // 토큰유효성검사 -> 유효성실패?리프레쉬로재발급:유저프로필호출 -> userId 확인 후 로그인 
-        authUserLogin:async(_,__,{accessToken})=>{
-            const authInfo = await client.authUser.findFirst({
-                where:{accessToken},
-                select:{
-                    accessToken:true,
-                    refreshToken:true
-                }
-            })
-            if(!authInfo){
-                return{
-                    ok:false,
-                    error:"Token Not Found"
-                }
-            }
-            let userAccessToken = authInfo.accessToken
-            const userRefreshToken = authInfo.refreshToken
-            //유효성검사
-            const tokenResult=await tokenVaildation(userAccessToken)
-            tokenUpdate(userRefreshToken)
-            if(tokenResult.code && tokenResult.code===-401){// 유효하지 않거나 액세스토큰 만료
-                try{
-                tokenUpdate(userRefreshToken)
-                }catch(e){
-                    return{
-                        ok:false,
-                        error:e.value
-                    }
-                }
-                const againVaildation = await tokenVaildation(userAccessToken)
-                if(againVaildation.code&& againVaildation.code===-401){ //유효하지 않음
-                    return{
-                        ok:false,
-                        error:againVaildation.msg
-                    }
-                }
-            }else if(tokenResult.code && tokenResult.code ===-1){ //카카오 일시적 내부오류 
-                return{
-                    ok:false,
-                    error:tokenResult.msg
-                }
-            }else if(tokenResult.code && tokenResult.code ===-2){ //인자 미포함,타입미적절
-                return{
-                    ok:false,
-                    error:tokenResult.msg
-                }
-            }
-            
+        // uniqueValue에 해당하는 유저 확인:없으면 NotFound Return?토큰발급 -> ok Return
 
-            //UniqueValue Request
-            const{uniqueValue}=String(await userProfile(userAccessToken))
+        authUserLogin:async(_,{email})=>{
+
+            // 토큰 유효성검사는 server.js 
             
-            const result = await client.user.findFirst({
-                where:{
-                    uniqueValue
-                },
-                select:{
-                    id:true
-                }
+            // UniqueValue 확인
+            
+            const user = await client.user.findUnique({
+                where:{email},
+                select:{id:true}
             })
-            
-            const token = await jwt.sign({id:result.id},process.env.SECRET_KEY)
-            return {
+            if(!user){
+                return{
+                    ok:false,
+                    error:process.env.NotFound_User
+                }
+            }
+            //토큰 발급
+            const token = await tokenIssuance(user.id)
+            return{
                 ok:true,
-                token,
+                token
             }
 
+
+         
         }
     }
 

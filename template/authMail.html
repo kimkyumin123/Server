@@ -1,0 +1,44 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+
+    <title>Document</title>
+</head>
+<script>
+constructor(props) {
+        super(props);
+        this.state = {
+            email: '',
+            usingemail: false, // 인증번호가 맞아서 가입가능한가??
+
+            number: '',      //보내진 인증번호
+            inputnumber: '', //내가 입력한 인증번호
+                             // 이 두개가 똑같아야 한다
+        }
+    }
+
+</script>
+<body>
+    <button onclick="sendEmail()">SEND</button>
+</body>
+<script>
+    const sendEmail=()=>{
+        const data = {
+        email: this.state.email           //입력한 email state값
+        }
+       fetch('http://localhost:4000/mail',{
+            method: "post",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(data),
+        })
+        .then(res => res.json())
+        .then(json => {
+            this.setState({
+                number: json.number,       //number이름의 state값에 생성한 인증번호를 받아왔따
+            })
+
+            console.log(this.state.number);
+        })
+    }
+</script>
+</html>

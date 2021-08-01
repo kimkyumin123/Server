@@ -1,0 +1,6 @@
+        /*==================ERROR CODE===================
+        -100 = Email that already exists
+        -101 = "Already In User"
+        -102 = "Create user Failed"
+        -103 = "NotFound User"
+        ==================ERROR CODE===================*/
