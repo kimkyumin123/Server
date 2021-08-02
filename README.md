@@ -20,6 +20,8 @@ DBMS- Postgresql
 
 ORM - Prisma
 
+Logger -  winston && morgan
+(로그는 일자별로 %APPROOT%/logs에 저장)
 ## 서버호스팅
 AWS - 파악필요
 ### 이미지호스팅
