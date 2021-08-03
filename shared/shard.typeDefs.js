@@ -8,6 +8,10 @@ export default gql`
     type loginResponse{
         ok:Boolean,
         error:String,
-        token:String
+        token:Token
+    }
+    type Token{
+        accessToken:String!,
+        refreshToken:String!
     }
 `

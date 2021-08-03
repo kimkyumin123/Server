@@ -21,13 +21,7 @@ export const getUser = async(token) =>{
     catch(e){
         //토큰 만료
         if(e instanceof TokenExpiredError){
-            const {id}=jwt.decode(token)
-            
-            const tokenResult = tokenUpdate(id)
-            if(!tokenResult){
-                return process.env.TokenExpiredError
-            }
-            return tokenResult
+            return process.env.AccessTokenExpiredError
         }
         throw e
     }
@@ -44,7 +38,7 @@ export const protectedResolver = (ourResolver)=>(root,args,context,info)=>{
         if(!context.loggedInUser){
             return{
                 ok:false,
-                error:"Please check to login"
+                error:process.env.CheckLogin
             }
         }
     }
@@ -63,19 +57,21 @@ export const tokenIssuance = async(userId)=>{
         expiresIn: '30d'
     });
         
-    const result=await client.user.update({
-        where:{
-            id:userId
-        },
-        select:{
-            refreshToken:true
-        },
-        data:{
-            refreshToken
-        }
-    })
-    
-    return accessToken;
+    // const result=await client.user.update({
+    //     where:{
+    //         id:userId
+    //     },
+    //     select:{
+    //         token:true
+    //     },
+    //     data:{
+    //         token
+    //     }
+    // })
+    const data = new Object();
+    data.accessToken=accessToken;
+    data.refreshToken=refreshToken
+    return data;
 
 }
 
@@ -84,27 +80,27 @@ export const tokenDelete = async()=>{
     // 삭제할 토큰을 모아둘 Table 생성해야함.
 }
 // RefreshToken을 통한 토큰 업데이트
-export const tokenUpdate = async(userId)=>{
-    //리프레쉬 토큰 가져오기
-    const user = await client.user.findUnique({
-        where:{id:userId},
-        select:{refreshToken:true}
-    })
+export const tokenUpdate = async(token)=>{
+
     
     //리프레쉬토큰 만료 확인
     try{
-        const {id} = jwt.verify(user.refreshToken,process.env.SECRET_KEY)
-        return await tokenIssuance(id)
+        //토큰 유효성검사
+        const {id} = jwt.verify(token,process.env.SECRET_KEY)
+        //토큰 발급
+        const data= tokenIssuance(token)
+        return data
     }catch(e){
+        console.log(e)
         //리프레쉬토큰 만료
         if(e instanceof TokenExpiredError){
             //재로그인 요청
-            return null;
+            return process.env.RefreshTokenExpiredError;
         }
         // 토큰이 없을때
         if(e instanceof JsonWebTokenError){
             //재로그인 요청
-            return null
+            return process.env.Invaild_Token
         }
         throw e
     }

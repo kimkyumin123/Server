@@ -1,0 +1,11 @@
+2021-08-03T12:07:56.744Z test Logging info: TESTLOG
+2021-08-03T12:07:56.744Z test Logging info: TESTLOG
+2021-08-03T12:08:18.830Z test Logging info: TESTLOG
+2021-08-03T12:08:35.117Z test Logging info: TESTLOG
+2021-08-03T12:08:35.118Z test Logging error: Error
+2021-08-03T12:08:57.934Z test Logging info: TESTLOG
+2021-08-03T12:08:57.935Z test Logging error: Error
+2021-08-03T12:10:42.850Z test Logging info: TESTLOG
+2021-08-03T12:10:42.853Z test Logging error: Error
+2021-08-03T12:11:15.616Z test Logging info: TESTLOG
+2021-08-03T12:11:15.619Z test Logging error: Error

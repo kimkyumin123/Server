@@ -2,14 +2,16 @@ require('dotenv').config()
 import express, { response } from 'express'
 import  {ApolloServer} from "apollo-server-express";
 import {resolvers,typeDefs} from "./schema";
-import logger from 'morgan'
+import morgan from 'morgan'
+import logger from './logger'
 import {  AccessTokenRequest, authorization ,auth} from './Auth';
-import { getUser } from './user/users.utils';
+import { getUser, tokenUpdate } from './user/users.utils';
 // Mailing
 import nodemailer from "nodemailer"
 import ejs from "ejs"
 import path from "path"
 import fs from 'fs'
+import { ExceptionHandler } from 'winston';
 
 var appDir =path.dirname(require.main.filename)
 // Mailing
@@ -33,10 +35,25 @@ const app=express()
 
 // app.use(express.static('resources'));
 server.applyMiddleware({app})
-app.use(logger('tiny'))
+// app.use(logger('tiny'))
+logger.info("TESTLOG")
+logger.error("Error")
+app.use(
+  morgan('combined', 
+    {
+      
+      skip: function (req, res) { return res.statusCode < 400 }, // http return 이 에러일때만 출력
+      stream: logger.stream, // logger에서 morgan의 stream 을 받도록 추가
+      
+    }
+  )
+);
+
 app.use(express.urlencoded({extended:true})); 
 app.use(express.json());
-
+app.get('error',(req,res)=>{
+  
+})
 
 app.get('/auth',(req,res)=>{
   
@@ -60,16 +77,6 @@ app.post('/login/callback',(req,res)=>{
   
 })
 //EMAIL 인증 로직
-app.get('/mail',async(req,res)=>{
-  fs.readFile('./template/authMail.html', function (error, data) { // index.html 파일 로드 .
-    if (error) {
-    console.log(error);
-    } else {
-    res.writeHead(200, { 'Content-Type': 'text/html' }); // Head Type 설정 .
-    res.end(data); // 로드 html response .
-    }
-  })
-})
 app.post('/mail', async(req, res) => {
   
   let authNum = Math.random().toString().substr(2,6);
@@ -117,3 +124,18 @@ app.post('/mail', async(req, res) => {
 app.listen({port:PORT},()=>{
   console.log(`server is Running localhost:${PORT}`)
 })
+app.post('/tokenUpdate',async(req,res)=>{
+  throw new Error('test')
+  const refreshToken = req.body.refreshToken;
+  try{
+    if(!refreshToken){
+      res.send(process.env.NOTFOUND_Token)
+    }
+    const data=await tokenUpdate(refreshToken)
+    
+    res.send(data)
+  }catch(e){
+    console.log(e)
+    res.send(e)
+  }
+});

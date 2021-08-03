@@ -1,0 +1,8 @@
+2021-08-03 21:26:53 test Logging info: TESTLOG
+2021-08-03 21:26:53 test Logging error: Error
+2021-08-03 21:27:11 test Logging http: ::1 - - [03/Aug/2021:12:27:11 +0000] "GET /dfasd HTTP/1.1" 404 144 "-" "curl/7.55.1"
+
+2021-08-03 21:27:32 test Logging info: TESTLOG
+2021-08-03 21:27:32 test Logging error: Error
+2021-08-03 21:28:49 test Logging info: TESTLOG
+2021-08-03 21:28:49 test Logging error: Error
