@@ -1,7 +1,7 @@
 import client from "../../client"
 import { uploadToS3 } from "../../shared/shard.utils"
 import { protectedResolver } from "../users.utils"
-const editUser = async(_,{nickName,bio,avatar,gender,ageRange},{loggedInUser})=>{
+const editUser = async(_,{nickName,bio,avatar,gender,ageRange},{loggedInUser,logger})=>{
 //로그인된 유저 확인 -> 토큰 유효성검사 ->닉네임 중복검사 ->프로필사진 변경시 서버 업로드-> DB 트랜잭션 -> ok Return
     if(loggedInUser===process.env.AccessTokenExpiredError){
         return{

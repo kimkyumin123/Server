@@ -24,12 +24,15 @@ model User{
     places Place[]
     platformType String?
     suggestions Suggestion[]
-    token String?    
+    
     
 }
 
 // 토큰 폐기관련 
-
+model Token{
+    id Int @id @default(autoincrement())
+    value String
+}
 
 
 model Suggestion{

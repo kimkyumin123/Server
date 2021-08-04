@@ -10,8 +10,8 @@ import { getUser, tokenUpdate } from './user/users.utils';
 import nodemailer from "nodemailer"
 import ejs from "ejs"
 import path from "path"
-import fs from 'fs'
-import { ExceptionHandler } from 'winston';
+import fetch from 'node-fetch';
+
 
 var appDir =path.dirname(require.main.filename)
 // Mailing
@@ -22,6 +22,7 @@ const server = new ApolloServer({
     return{
       loggedInUser:await getUser(req.headers.accesstoken),
       accessToken:req.headers.accesstoken,
+      logger:logger
 
       
     
@@ -36,8 +37,7 @@ const app=express()
 // app.use(express.static('resources'));
 server.applyMiddleware({app})
 // app.use(logger('tiny'))
-logger.info("TESTLOG")
-logger.error("Error")
+
 app.use(
   morgan('combined', 
     {
@@ -48,11 +48,44 @@ app.use(
     }
   )
 );
+process.on('uncaughtException', (err) => {
+  console.error('uncaughtException', err);
+  process.exit
+});
+
 
 app.use(express.urlencoded({extended:true})); 
 app.use(express.json());
-app.get('error',(req,res)=>{
-  
+app.get('/test',(req,res)=>{
+  var query = `mutation UserLogin($userName: String!, $passwd: String!) {
+    userLogin(userName: $userName, password: $passwd){
+      ok,
+      error,
+      token{
+        refreshToken
+        accessToken
+      }
+    }
+  }`;
+  var userName="lso5507"
+  var passwd="1111"
+  fetch('http://localhost:4000/graphql', {
+    
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+    },
+    body: JSON.stringify({
+      query,
+      variables:{
+        userName,
+        passwd
+      }
+    })
+  })
+    .then(r => r.json())
+    .then(data => console.log('data returned:', data));
 })
 
 app.get('/auth',(req,res)=>{

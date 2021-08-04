@@ -1,0 +1,14 @@
+{
+    "keep": {
+        "days": false,
+        "amount": 30
+    },
+    "auditLog": "C:\\Users\\swlee\\Desktop\\github\\travely\\Server\\logs\\.2c9c01bdaecdaf825ad1fa2a4bb299078559a0e8-audit.json",
+    "files": [
+        {
+            "date": 1628089297281,
+            "name": "C:\\Users\\swlee\\Desktop\\github\\travely\\Server\\logs\\2021-08-05_http.log",
+            "hash": "2d847e2a90b6f2bb4539e10dd44b7815"
+        }
+    ]
+}

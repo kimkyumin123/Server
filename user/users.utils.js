@@ -1,11 +1,13 @@
 import jwt, { JsonWebTokenError, TokenExpiredError }  from 'jsonwebtoken'
 import client from '../client';
+import logger from '../logger';
 
 // 토큰 유효성검사 
 export const getUser = async(token) =>{
     try{ 
-        
+        //토큰이 없을때
         if(!token){
+            //수정필요
             return null
         }
         const {id} = jwt.verify(token,process.env.SECRET_KEY)
@@ -19,22 +21,31 @@ export const getUser = async(token) =>{
         }
     }
     catch(e){
+        
         //토큰 만료
         if(e instanceof TokenExpiredError){
+            logger.error(process.env.AccessTokenExpiredError)
             return process.env.AccessTokenExpiredError
+        }
+        //토큰이 유효하지 않을때
+        if(e instanceof JsonWebTokenError){
+            //재로그인 요청
+            logger.error(e)
+            return process.env.Invaild_Token
         }
         throw e
     }
 }
-
+//로그인 필요한 작업일때.
 export const protectedResolver = (ourResolver)=>(root,args,context,info)=>{
-
+    //query와 Mutation 구분
     const query =  info.operation.operation === "query"
     if(query){
         if(!context.loggedInUser){
             return null
         }
     }else{
+        logger.error(process.env.CheckLogin)
         if(!context.loggedInUser){
             return{
                 ok:false,
@@ -42,7 +53,7 @@ export const protectedResolver = (ourResolver)=>(root,args,context,info)=>{
             }
         }
     }
-    console.log("protectedResolver In Success")
+    
     return ourResolver(root,args,context,info);
 
 }
@@ -82,24 +93,32 @@ export const tokenDelete = async()=>{
 // RefreshToken을 통한 토큰 업데이트
 export const tokenUpdate = async(token)=>{
 
+    //토큰이 없을때
+    if(!token){
+    logger.error(process.env.NOTFOUND_Token)
+    return process.env.NOTFOUND_Token
+    }
     
     //리프레쉬토큰 만료 확인
     try{
+        
         //토큰 유효성검사
         const {id} = jwt.verify(token,process.env.SECRET_KEY)
         //토큰 발급
         const data= tokenIssuance(token)
         return data
     }catch(e){
-        console.log(e)
+        
         //리프레쉬토큰 만료
         if(e instanceof TokenExpiredError){
             //재로그인 요청
+            logger.error(process.env.RefreshTokenExpiredError)
             return process.env.RefreshTokenExpiredError;
         }
-        // 토큰이 없을때
+        // 토큰이 유효하지 않을때
         if(e instanceof JsonWebTokenError){
             //재로그인 요청
+            logger.error(process.env.Invaild_Token)
             return process.env.Invaild_Token
         }
         throw e
