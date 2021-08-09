@@ -1,5 +1,5 @@
 import client from "../../client"
-import { tokenUpdate, tokenVaildation, userProfile } from "../auth/auth.utils"
+import { tokenUpdate, tokenVaildation, userProfile } from "../auth/kakaoAuth.utils"
 import jwt from "jsonwebtoken"
 import { getUser, tokenIssuance } from "../users.utils"
 

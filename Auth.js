@@ -1,7 +1,5 @@
-import axios from "axios";
-import { response } from "express";
-import {google} from "googleapis"
-import fetch from "node-fetch";
+
+const fetch =require ("node-fetch");
 
 
 
@@ -18,7 +16,7 @@ export const AccessTokenRequest = async(req)=>{
   console.log(code)
   
 try{
-console.log(process.env.KAKAO_SecretKEY)
+
 fetch('https://kauth.kakao.com/oauth/token', {
     method: 'POST',
     headers:{'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',},

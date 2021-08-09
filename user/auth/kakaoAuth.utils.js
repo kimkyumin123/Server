@@ -19,7 +19,7 @@ export const tokenVaildation=async(accessToken)=>{ //토큰 유효성 검사
             'Authorization': `Bearer ${accessToken}`
         }
     }).then(res=>res.json())
-    
+    console.log(data)
     return data
 }
 export const tokenDelete=async(accessToken)=>{

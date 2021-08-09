@@ -11,12 +11,15 @@ import nodemailer from "nodemailer"
 import ejs from "ejs"
 import path from "path"
 import fetch from 'node-fetch';
-
+import { tokenVaildation } from './user/auth/kakaoAuth.utils';
+import { graphqlUploadExpress } from "graphql-upload";
 
 var appDir =path.dirname(require.main.filename)
 // Mailing
 const server = new ApolloServer({
+  uploads:false,
   resolvers,typeDefs,
+
   context:async({req}) =>{
     
     return{
@@ -34,9 +37,34 @@ const server = new ApolloServer({
 const PORT =process.env.PORT
 const app=express()
 
+//  ReadStream.prototype.open() is deprecated ISSUE!
+app.use(graphqlUploadExpress())
 // app.use(express.static('resources'));
 server.applyMiddleware({app})
+app.use(graphqlUploadExpress({ maxFileSize: 1000000000, maxFiles: 10 }));
 // app.use(logger('tiny'))
+app.get('/auth',(req,res)=>{
+  
+  auth().then((e)=>{
+  
+    // res.writeHead(200, {'Content-Type' : 'text/plain'});
+    // res.end(e)
+    res.redirect(e)
+  })
+})
+app.get('/kakao_auth',async (req,res)=>{
+  console.log(req.query)
+  const data= await tokenVaildation(req.query.token)
+  console.log(data.code);
+  res.send(data.code)
+})
+app.get('/facebook/callback',(req,res)=>{
+  res.send("test")
+})
+app.get('/login/callback',(req,res)=>{
+  AccessTokenRequest(req)
+  
+})
 
 app.use(
   morgan('combined', 
@@ -56,59 +84,9 @@ process.on('uncaughtException', (err) => {
 
 app.use(express.urlencoded({extended:true})); 
 app.use(express.json());
-app.get('/test',(req,res)=>{
-  var query = `mutation UserLogin($userName: String!, $passwd: String!) {
-    userLogin(userName: $userName, password: $passwd){
-      ok,
-      error,
-      token{
-        refreshToken
-        accessToken
-      }
-    }
-  }`;
-  var userName="lso5507"
-  var passwd="1111"
-  fetch('http://localhost:4000/graphql', {
-    
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'Accept': 'application/json',
-    },
-    body: JSON.stringify({
-      query,
-      variables:{
-        userName,
-        passwd
-      }
-    })
-  })
-    .then(r => r.json())
-    .then(data => console.log('data returned:', data));
-})
 
-app.get('/auth',(req,res)=>{
-  
-  auth().then((e)=>{
-  
-    // res.writeHead(200, {'Content-Type' : 'text/plain'});
-    // res.end(e)
-    res.redirect(e)
-  })
-})
-app.get('/auths',(req,res)=>{
-  const data=1
-  console.log(data)
-})
-app.get('/login/callback',(req,res)=>{
-  AccessTokenRequest(req)
-  
-})
-app.post('/login/callback',(req,res)=>{
-  console(req)
-  
-})
+
+
 //EMAIL 인증 로직
 app.post('/mail', async(req, res) => {
   
@@ -152,23 +130,7 @@ app.post('/mail', async(req, res) => {
   }catch(e){
     console.log(e)
   }
-
 });
 app.listen({port:PORT},()=>{
   console.log(`server is Running localhost:${PORT}`)
 })
-app.post('/tokenUpdate',async(req,res)=>{
-  throw new Error('test')
-  const refreshToken = req.body.refreshToken;
-  try{
-    if(!refreshToken){
-      res.send(process.env.NOTFOUND_Token)
-    }
-    const data=await tokenUpdate(refreshToken)
-    
-    res.send(data)
-  }catch(e){
-    console.log(e)
-    res.send(e)
-  }
-});

@@ -1,6 +1,6 @@
 import { token } from "morgan"
 import client from "../../client"
-import { userProfile } from "../auth/auth.utils"
+import { userProfile } from "../auth/kakaoAuth.utils"
 
 export default{
     Mutation:{

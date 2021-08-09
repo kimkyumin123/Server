@@ -8,11 +8,11 @@ AWS.config.update({
 
 
 // AWS S3 업로드 
-export const uploadToS3 = async(avatar,userid,folerName)=>{
+export const uploadToS3 = async(avatar,userid,fodlerName)=>{
     const {filename,createReadStream}=await avatar
-    const newFileName = `${folerName}/${userid}+${Date.now()}+${filename}`;
+    const newFileName = `${fodlerName}/${userid}+${Date.now()}+${filename}`;
     const readStream = createReadStream();
-    
+    console.log("UPLOAD")
     const ok = await new AWS.S3().upload({
         Bucket:"instaclone-upload-lee",
         Key:newFileName,

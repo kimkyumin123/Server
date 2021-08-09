@@ -38,7 +38,7 @@ export default{
                 logger.error(__dirname,e)
                 return {
                     ok:false,
-                    error:process.env.UncaughtException
+                    error:process.env.Transaction_ERROR
                 }
             }
             

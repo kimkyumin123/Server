@@ -42,11 +42,13 @@ export const protectedResolver = (ourResolver)=>(root,args,context,info)=>{
     const query =  info.operation.operation === "query"
     if(query){
         if(!context.loggedInUser){
+            logger.error(`${__dirname}___loggedInUser_QUERY_NotFOUND`)
             return null
         }
     }else{
-        logger.error(process.env.CheckLogin)
+        
         if(!context.loggedInUser){
+            logger.error(`${__dirname}___loggedInUser_MUTATION_NotFOUND`)
             return{
                 ok:false,
                 error:process.env.CheckLogin
@@ -62,7 +64,7 @@ export const protectedResolver = (ourResolver)=>(root,args,context,info)=>{
 export const tokenIssuance = async(userId)=>{
     
     const accessToken = jwt.sign({ id: userId }, process.env.SECRET_KEY, {
-        expiresIn: '20s'
+        expiresIn: '7d'
     });
     const refreshToken = jwt.sign({ id: userId }, process.env.SECRET_KEY, {
         expiresIn: '30d'
