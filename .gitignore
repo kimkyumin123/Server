@@ -5,3 +5,5 @@ node_modules
 # logs 
 *.log
 logs/
+#API Reference
+schema.md

@@ -6,13 +6,9 @@ import { getUser, tokenIssuance } from "../users.utils"
 export default{
     Mutation:{
         // uniqueValue에 해당하는 유저 확인:없으면 NotFound Return?토큰발급 -> ok Return
-
         authUserLogin:async(_,{email})=>{
-
             // 토큰 유효성검사는 server.js 
-            
             // UniqueValue 확인
-            
             const user = await client.user.findUnique({
                 where:{email},
                 select:{id:true}

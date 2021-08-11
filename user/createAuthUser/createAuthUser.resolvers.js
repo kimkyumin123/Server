@@ -12,7 +12,7 @@ export default{
         // 중복이메일 확인?중복시 가입된이력안내:PASS -> 중복된닉네임확인?중복시 중복확인:PASS ->DB 트랜잭션->성공여부전달
         createAuthUser:async(_,{nickName,avatar,bio,email,platformType,gender})=>{
             
-            //중복이메일 확인
+        //중복이메일 확인
             const ExistEmail = await client.user.findUnique({
                 where:{email},
                 select:{email:true}

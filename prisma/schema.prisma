@@ -8,7 +8,9 @@ generator client {
 }
 model User{
     id Int @id @default(autoincrement()) 
-    userName String? @unique  // 아이디  중복불가
+    // 아이디  중복불가
+    
+    userName String? @unique 
     password String? // 패스워드
     nickName String  @unique // 사용자 닉네임 중복불가
     email String @unique// 사용자 이메일

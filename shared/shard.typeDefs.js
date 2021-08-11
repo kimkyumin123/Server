@@ -10,6 +10,10 @@ export default gql`
         ok:Boolean,
         error:String,
         token:Token
+    },
+    type QueryResponse{
+        ok:Boolean!,
+        error:Int
     }
     type Token{
         accessToken:String!,
