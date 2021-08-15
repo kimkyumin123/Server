@@ -28,7 +28,8 @@ export default gql`
     }
 
     type Query{
-         dummy:String! #Query Root 권한 issue
+        userCheck(email:String,nickName:String):QueryResponse
     }
+
 
 `

@@ -4,14 +4,14 @@ import  {ApolloServer} from "apollo-server-express";
 import {resolvers,typeDefs} from "./schema";
 import morgan from 'morgan'
 import logger from './logger'
-import {  AccessTokenRequest, authorization ,auth} from './Auth';
+import {  AccessTokenRequest, authorization ,auth, naver_auth} from './Auth';
 import { getUser, tokenUpdate } from './user/users.utils';
 // Mailing
 import nodemailer from "nodemailer"
 import ejs from "ejs"
 import path from "path"
 import fetch from 'node-fetch';
-import { tokenVaildation } from './user/auth/kakaoAuth.utils';
+import { userProfile } from './user/auth/kakaoAuth.utils';
 import { graphqlUploadExpress } from "graphql-upload";
 
 var appDir =path.dirname(require.main.filename)
@@ -54,9 +54,20 @@ app.get('/auth',(req,res)=>{
 })
 app.get('/kakao_auth',async (req,res)=>{
   console.log(req.query)
-  const data= await tokenVaildation(req.query.token)
-  console.log(data.code);
-  res.send(data.code)
+  const data= await userProfile(req.query.token)
+  console.log(data);
+  
+})
+app.get('/naver_callback',async(req,res)=>{
+  console.log(req.query)
+  await naver_auth(req.query.code,req.query.state)
+})
+app.get('/naver_auth',async(req,res)=>{
+  const CALLBACKURL="http://localhost:4000/naver_callback"
+  const url = `https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=${process.env.NAVER_ID}&state=STATE_STRING&redirect_uri=${CALLBACKURL}`
+  
+ 
+  res.redirect(url)
 })
 app.get('/facebook/callback',(req,res)=>{
   res.send("test")

@@ -1,5 +1,6 @@
 import fetch from "node-fetch"
 import client from "../../client"
+import logger from "../../logger"
 
 //액세스토큰 기본 6시간 발급 
 export const userProfile = async(accessToken)=>{  //프로필 조회(사전에 동의 된 scope내)
@@ -10,7 +11,13 @@ export const userProfile = async(accessToken)=>{  //프로필 조회(사전에 �
         },
     }).then(res=>res.json())
     .catch(err=>console.error(err))
-    return profile
+    if(profile.kakao_account){ //조회성공
+        return profile.kakao_account.email
+    }else{ //조회 실패
+        return null
+    }
+    
+    
 }
 export const tokenVaildation=async(accessToken)=>{ //토큰 유효성 검사
     
@@ -19,8 +26,14 @@ export const tokenVaildation=async(accessToken)=>{ //토큰 유효성 검사
             'Authorization': `Bearer ${accessToken}`
         }
     }).then(res=>res.json())
-    console.log(data)
-    return data
+    if(data.code){//유효성 검사 실패
+        logger.error(`${__dirname}|${data.msg}`)
+        return false 
+    }else{
+        logger.info(`${__dirname}|KaKaoAuth_CHECK_SUCCESS`)
+        return true
+    }
+    
 }
 export const tokenDelete=async(accessToken)=>{
     
