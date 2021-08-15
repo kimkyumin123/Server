@@ -4,11 +4,12 @@ import { userProfile } from "../auth/kakaoAuth.utils"
 
 export default{
     Mutation:{
-        /*==================ERROR CODE===================
-        -100 = Email that already exists
-        -101 = "Already In User"
-        -102 = "Create user Failed"
-        ==================ERROR CODE===================*/
+        /*==================platformType===================
+            kakao,
+            naver,
+            apple
+
+        ==================platformType===================*/
         // 중복이메일 확인?중복시 가입된이력안내:PASS -> 중복된닉네임확인?중복시 중복확인:PASS ->DB 트랜잭션->성공여부전달
         createAuthUser:async(_,{nickName,avatar,bio,email,platformType,gender})=>{
             

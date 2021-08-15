@@ -9,7 +9,7 @@ await fetch(url, {
   method: 'POST',
   headers:{'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',},
 }).then(res=>res.json())
-.then(json=>data=json)
+.then(json=>console.log("json::",json))
 .catch(err=>console.error(err))
 
   const tokenVaildation = `https://openapi.naver.com/v1/nid/me`
@@ -19,9 +19,10 @@ await fetch(url, {
         'Authorization': `Bearer ${data.access_token}`
     },
 }).then(res=>res.json())
-.then(json=>console.log(json))
-.catch(err=>console.error(err))
-  console.log(result.response.email)
+.then(json=>data=json)
+.catch(err=>console.error("err::",err))
+
+console.log("email::",data.response.email)
 }
 // KAKAOTest
 export const auth =async()=>{

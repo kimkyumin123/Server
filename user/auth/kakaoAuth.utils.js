@@ -12,8 +12,10 @@ export const userProfile = async(accessToken)=>{  //프로필 조회(사전에 �
     }).then(res=>res.json())
     .catch(err=>console.error(err))
     if(profile.kakao_account){ //조회성공
+        logger.info(`${__dirname}|ReadSuccess_KAKAO_ACOUNT`)
         return profile.kakao_account.email
     }else{ //조회 실패
+        logger.error(`${__dirname}|NotFound_KAKAO_ACOUNT`)
         return null
     }
     
