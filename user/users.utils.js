@@ -24,7 +24,7 @@ export const getUser = async(token) =>{
         
         //토큰 만료
         if(e instanceof TokenExpiredError){
-            logger.error(process.env.AccessTokenExpiredError)
+            logger.error(`${__dirname}|${process.env.AccessTokenExpiredError}_AccessTokenExpiredError`)
             return process.env.AccessTokenExpiredError
         }
         //토큰이 유효하지 않을때

@@ -15,11 +15,38 @@ import { userProfile } from './user/auth/kakaoAuth.utils';
 import { graphqlUploadExpress } from "graphql-upload";
 
 var appDir =path.dirname(require.main.filename)
+
+const myPlugin = {
+  // Fires whenever a GraphQL request is received from a client.
+  async requestDidStart(requestContext) {
+     logger.info('Request started! Query:\n' +
+      requestContext.request.query);
+    // console.log(`Request started! Query`)
+
+    return {
+      // Fires whenever Apollo Server will parse a GraphQL
+      // request to create its associated document AST.
+      async parsingDidStart(requestContext) {
+        console.log('Parsing started!');
+      },
+
+      // Fires whenever Apollo Server will validate a
+      // request's document AST against your GraphQL schema.
+      async validationDidStart(requestContext) {
+        console.log('Validation started!');
+      },
+
+    }
+  },
+};
+
 // Mailing
 const server = new ApolloServer({
   uploads:false,
   resolvers,typeDefs,
-
+  plugins:[
+    myPlugin
+  ],
   context:async({req}) =>{
     
     return{
@@ -87,6 +114,7 @@ app.use(
     }
   )
 );
+
 process.on('uncaughtException', (err) => {
   console.error('uncaughtException', err);
   process.exit

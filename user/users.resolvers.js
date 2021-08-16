@@ -2,7 +2,7 @@ import client from "../client"
 
 export default{
     Query:{
-        userCheck:async(_,{nickName,email})=>{
+        userCheck:async(_,{nickName,email},{logger})=>{
 
             //nickName 체크 
             if(nickName){
@@ -10,6 +10,7 @@ export default{
                     where:{nickName}
                 })
                 if(nameCheck){
+                    logger.error(`${__dirname}|${nickName} is AlreadyNickName`)
                     return{
                         ok:false,
                         error:process.env.Already_Nickname
@@ -24,6 +25,7 @@ export default{
                     where:{email}
                 })
                 if(emailCheck){
+                    logger.error(`${__dirname}|${email} is Alreadyemail`)
                     return{
                         ok:false,
                         error:process.env.Already_Email
