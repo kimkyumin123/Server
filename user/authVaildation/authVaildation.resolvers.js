@@ -24,12 +24,12 @@ export default{
             }else if(result.code===-2){
                 return {
                     ok:false,
-                    error:"Required element not found"
+                    error:process.env.TokenExpiredError
                 }
             }else if(result.code===-1){
                 return{
                     ok:false,
-                    error:"temporary error"
+                    error:process.env.UnknownError
                 }
             }
            }

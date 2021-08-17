@@ -8,7 +8,7 @@ export default gql`
     },
     type loginResponse{
         ok:Boolean,
-        error:String,
+        error:Int,
         token:Token
     },
     type QueryResponse{

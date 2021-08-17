@@ -37,7 +37,7 @@ export default{
             }
             return{
                 ok:false,
-                error:"Null"
+                error:process.env.UnknownError
             }
         }
     },
