@@ -13,8 +13,15 @@ import path from "path"
 import fetch from 'node-fetch';
 import { userProfile } from './user/auth/kakaoAuth.utils';
 import { graphqlUploadExpress } from "graphql-upload";
-
+import cron from "node-cron"
+import { refreshTokenDelete } from './schedule/TokenSchedule';
 var appDir =path.dirname(require.main.filename)
+
+//Cron Scheduled 월 1일마다 삭제
+cron.schedule('* * * 1 * * ',async()=>{
+  await refreshTokenDelete();
+})
+
 
 const myPlugin = {
   // Fires whenever a GraphQL request is received from a client.

@@ -6,6 +6,7 @@ generator client {
   provider      = "prisma-client-js"
   previewFeatures = ["referentialActions"]
 }
+
 model User{
     id Int @id @default(autoincrement()) 
     // 아이디  중복불가
@@ -30,10 +31,11 @@ model User{
     
 }
 
-// 토큰 폐기관련 
+// RefreshToken 폐기목록 
 model Token{
     id Int @id @default(autoincrement())
-    value String
+    token String 
+    createdAt DateTime @default(now()) //생성날짜
 }
 
 
