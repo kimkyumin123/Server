@@ -21,6 +21,9 @@ DBMS- Postgresql
 ORM - Prisma
 
 Logger -  winston && morgan
+
+스케쥴러 - node-cron
+
 (로그는 일자별로 %APPROOT%/logs에 저장)
 ## 서버호스팅
 AWS - 파악필요
