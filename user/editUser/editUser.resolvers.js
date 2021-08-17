@@ -49,7 +49,7 @@ const editUser = async(_,{nickName,bio,avatar,gender,ageRange,password},{loggedI
     if(!result){
         return{
             ok:false,
-            error:process.env.TransactionError
+            error:process.env.Transaction_ERROR
         }
     }
     return{
