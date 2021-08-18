@@ -5,11 +5,13 @@ import logger from '../logger';
 // 토큰 유효성검사 
 export const getUser = async(token) =>{
     try{ 
+        console.log(token)
         //토큰이 없을때
         if(!token){
             //수정필요
             return null
         }
+        
         const {id} = jwt.verify(token,process.env.SECRET_KEY)
         const user =await client.user.findUnique({where:{id}});
         
@@ -25,6 +27,7 @@ export const getUser = async(token) =>{
         //토큰 만료
         if(e instanceof TokenExpiredError){
             logger.error(`${__dirname}|${process.env.AccessTokenExpiredError}_AccessTokenExpiredError`)
+            
             return process.env.AccessTokenExpiredError
         }
         //토큰이 유효하지 않을때
@@ -64,10 +67,10 @@ export const protectedResolver = (ourResolver)=>(root,args,context,info)=>{
 export const tokenIssuance = async(userId)=>{
     
     const accessToken = jwt.sign({ id: userId }, process.env.SECRET_KEY, {
-        expiresIn: '7d'
+        expiresIn: '1d'
     });
     const refreshToken = jwt.sign({ id: userId }, process.env.SECRET_KEY, {
-        expiresIn: '30d'
+        expiresIn: '90d'
     });
         
     // const result=await client.user.update({
@@ -100,6 +103,19 @@ export const tokenUpdate = async(token)=>{
     logger.error(process.env.NOTFOUND_Token)
     return process.env.NOTFOUND_Token
     }
+    //리프레쉬토큰 폐기 확인
+    const DeleteToken =await  client.token.findFirst({
+        where:{
+            token
+        }
+    })
+    if(DeleteToken){
+        logger.error(`${__dirname}|DeleteToken::${token}`)
+        return{
+            ok:false,
+            error:process.env.Delete_Token
+        }
+    }
     
     //리프레쉬토큰 만료 확인
     try{
@@ -107,7 +123,7 @@ export const tokenUpdate = async(token)=>{
         //토큰 유효성검사
         const {id} = jwt.verify(token,process.env.SECRET_KEY)
         //토큰 발급
-        const data= tokenIssuance(token)
+        const data= tokenIssuance(id)
         return data
     }catch(e){
         

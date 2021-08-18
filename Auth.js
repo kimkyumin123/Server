@@ -9,7 +9,7 @@ await fetch(url, {
   method: 'POST',
   headers:{'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',},
 }).then(res=>res.json())
-.then(json=>console.log("json::",json))
+.then(json=>console.log(data=json))
 .catch(err=>console.error(err))
 
   const tokenVaildation = `https://openapi.naver.com/v1/nid/me`

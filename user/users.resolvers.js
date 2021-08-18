@@ -35,6 +35,7 @@ export default{
                     ok:true
                 }
             }
+            //잡지못한 에러
             return{
                 ok:false,
                 error:process.env.UnknownError

@@ -57,8 +57,7 @@ const server = new ApolloServer({
   context:async({req}) =>{
     
     return{
-      loggedInUser:await getUser(req.headers.accesstoken),
-      accessToken:req.headers.accesstoken,
+      loggedInUser:await getUser(req.headers.authorization?req.headers.authorization.substr(7):null),
       logger:logger
 
       
@@ -177,6 +176,16 @@ app.post('/mail', async(req, res) => {
     console.log(e)
   }
 });
+app.get('/hello',(req,res)=>{
+  res.send("hello")
+})
+app.post('/tokenupdate',async(req,res)=>{
+  const refreshToken= req.body.token
+  const result = await tokenUpdate(refreshToken);
+ res.send(result)
+  
+  
+})
 app.listen({port:PORT},()=>{
   console.log(`server is Running localhost:${PORT}`)
 })

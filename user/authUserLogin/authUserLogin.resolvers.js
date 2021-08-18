@@ -11,7 +11,7 @@ export default{
 
 
             //토큰 유효성검사
-            let result = false
+            let result = null
             if(platform_type.toLowerCase()==="kakao"){
                  result = await userProfile(accesstoken)
                  logger.info(`${__filename}| UserEmail:${result}`)
