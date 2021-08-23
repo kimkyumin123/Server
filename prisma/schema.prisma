@@ -24,7 +24,7 @@ model User{
     createdAt DateTime @default(now()) // 가입날짜
     updatedAt DateTime @updatedAt  // 업데이트 날짜
     reviews Review[]
-    places Place[]
+    
     platformType String?
     suggestions Suggestion[]
     
@@ -61,11 +61,13 @@ model Review{
     content String
     upload String? //일단 임시 추후 upload로 변경
     userId Int
+    //유저 회원탙퇴시 업로드 게시글 삭제
     user User @relation(fields: [userId],references:[id],onDelete:Cascade,onUpdate: Cascade)
     comments Comment[] 
     suggestions Suggestion?
     placeId Int
-    place Place @relation(fields: [userId],references:[id],onDelete:Cascade,onUpdate:Cascade)
+    //장소 변경시 변경된 장소 업데이트
+    place Place[] @relation(fields: [placeId],references:[id],onUpdate:Cascade)
     hashtags HashTag[]
     @@unique([userId,placeId])
 }
@@ -76,14 +78,15 @@ model Place{
     title String //장소이름
     address String //주소 (도로명주소?번지주소?)
     zipCode Int? //우편번호
-    x Int //x좌표
-    y Int //y좌표
+    x Float //x좌표
+    y Float //y좌표
     category String?
-    userId Int //장소 등록자
-    user User @relation(fields: [userId],references:[id],onDelete:Cascade,onUpdate: Cascade)
+    //userId Int //장소 등록자    
+    // user User @relation(fields: [userId],references:[id],onDelete:Cascade,onUpdate: Cascade)
     //suggestions Suggestion?
-    reviews Review[] 
-    @@unique([userId])
+    reviewId Int?
+    reviews Review[] @relation(fields: [reviewId],references:[id],onUpdate:Cascade)
+    //@@unique([userId])
 }
 model Comment{
     id Int @id @default(autoincrement()) 

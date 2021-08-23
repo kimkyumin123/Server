@@ -12,11 +12,12 @@ const deleteFn =async(_,__,{loggedInUser,logger})=>{
            }
     // 일반유저 Auth유저 공통 -> 이메일 제거 
     try{
-        await client.user.delete({
+       const result= await client.user.delete({
             where:{
                 email:loggedInUser.email
             }
         })
+        logger.info(`${__dirname}| %o`,result)
     }catch(e){
         logger.error(__dirname,e)
     }

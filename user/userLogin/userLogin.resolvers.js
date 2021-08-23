@@ -18,6 +18,7 @@ export default {
                     error:process.env.NotFound_User
                 }
             }
+            logger.info(`${__dirname}| %o`,user)
             const passwordOk = await bcrypt.compare(password,user.password)
             if(!passwordOk){
                 logger.error(process.env.Incorrect_Password)

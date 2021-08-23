@@ -9,7 +9,7 @@ const authUserLogoutFN = async(_,{token},{logger})=>{
             token
         }
     })
-    console.log(result)
+    logger.info(`${__dirname}| %o`,result)
     return{
         ok:true,
         

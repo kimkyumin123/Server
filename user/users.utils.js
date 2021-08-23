@@ -34,7 +34,7 @@ export const getUser = async(token) =>{
         if(e instanceof JsonWebTokenError){
             //재로그인 요청
             logger.error(e)
-            return process.env.Invaild_Token
+            throw process.env.Invaild_Token
         }
         throw e
     }

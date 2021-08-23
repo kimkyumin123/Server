@@ -7,9 +7,22 @@ const editUser = async(_,{nickName,bio,avatar,gender,ageRange,password},{loggedI
         return{
             ok:false,
             error:process.env.AccessTokenExpiredError
+        }
 
+    }
+    else if(loggedInUser===process.env.Invaild_Token){
+        return{
+            ok:false,
+            error:process.env.Invaild_Token
         }
     }
+    else if(!loggedInUser){
+        return{
+            ok:false,
+            error:process.env.CheckLogin
+        }
+    }
+    
 
     let avatarUrl = null
     let uglyPassword = null
@@ -52,6 +65,7 @@ const editUser = async(_,{nickName,bio,avatar,gender,ageRange,password},{loggedI
             error:process.env.Transaction_ERROR
         }
     }
+    logger.info(`${__dirname}| %o`,result)
     return{
         ok:true,
 

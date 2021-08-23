@@ -91,6 +91,9 @@ app.get('/kakao_auth',async (req,res)=>{
   console.log(data);
   
 })
+app.get('/vmap',async(req,res)=>{
+  console.log(req)
+})
 app.get('/naver_callback',async(req,res)=>{
   console.log(req.query)
   await naver_auth(req.query.code,req.query.state)

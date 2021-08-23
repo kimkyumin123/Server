@@ -11,7 +11,7 @@ type Place{
     x:Int!
     y:Int!
     category:String
-    userId:Int
-    reviews:[Review]
+    # userId:Int
+    # reviews:[Review]
 }
 `

@@ -64,6 +64,7 @@ export default{
                     ...(avatar&&{avatar:avatar})
                 }
             })
+            logger.info(`${__dirname}| %o`,resultUser)
             if(!resultUser){
                 return{
                     ok:false,

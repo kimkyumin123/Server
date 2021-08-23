@@ -24,7 +24,7 @@ export default{
             }
             const uglyPassword= await bcrypt.hash(password, 10)
             try{
-                await client.user.create({
+                const result=await client.user.create({
                     data:{
                         userName,
                         email,
@@ -34,6 +34,7 @@ export default{
                         bio
                     }
                 })
+                logger.info(`${__dirname}| %o`,result)
             }catch(e){
                 logger.error(__dirname,e)
                 return {
