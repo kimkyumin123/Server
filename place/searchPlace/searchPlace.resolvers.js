@@ -11,12 +11,12 @@ export default {
                     title:{
                         startsWith:title
                     },
-                    category
+                    ...(category &&{category})
                 },
                 orderBy:{
                     updatedAt:"asc"
                 },
-                take:1,
+                take:10,
                 skip:lastId?1:0,
                 ...(lastId &&{cursor:{id:lastId}})  //cursor => 마지막 요소 저장
                 
