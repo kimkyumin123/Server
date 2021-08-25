@@ -8,8 +8,8 @@ type Place{
     title:String!
     address:String!
     zipCode:Int
-    x:Int!
-    y:Int!
+    x:Float!
+    y:Float!
     category:String
     # userId:Int
     # reviews:[Review]
