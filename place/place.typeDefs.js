@@ -11,7 +11,11 @@ type Place{
     x:Float!
     y:Float!
     category:String
+    uniqueId:String
     # userId:Int
     # reviews:[Review]
+}
+type Query{
+    placeAbout(placeId:String!):[Review]
 }
 `

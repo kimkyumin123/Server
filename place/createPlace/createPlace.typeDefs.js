@@ -8,6 +8,7 @@ export default gql`
         x:Float!
         y:Float!
         category:String
+        placeId:String!
 
     }
     type Mutation{

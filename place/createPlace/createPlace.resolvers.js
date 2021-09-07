@@ -27,26 +27,54 @@ const createPlaceFN= async(_,{place},{loggedInUser,logger})=>{
         }
     }
     place.forEach(async(element) => {
-        const result = await client.place.create({
-            data:{
-                title:element.title,
-                address:element.address,
-                zipCode:element.zipCode,
-                x:element.x,
-                y:element.y,
-                category:element.category
-
-
+        try{
+        const placeOverlap = await client.place.findUnique({
+            where:{
+                uniqueId:element.placeId
             }
- 
         })
-        if(!result){
+                //있을시 중복처리
+        if(placeOverlap){
+            logger.info(`${__dirname}|Already Place %o`,placeOverlap)
+        }
+        }catch(e){
+            logger.error(`${__dirname}|%o`,e)
             return{
                 ok:false,
-                error:process.env.CreateFail_Place
+                error:process.env.Transaction_ERROR
             }
         }
-        logger.info(`${__dirname}| %o`,result)
+        try{
+            const result = await client.place.create({
+                data:{
+                    title:element.title,
+                    address:element.address,
+                    zipCode:element.zipCode,
+                    x:element.x,
+                    y:element.y,
+                    category:element.category,
+                    uniqueId:element.placeId
+
+
+                }
+
+            })
+            if(!result){
+                return{
+                    ok:false,
+                    error:process.env.CreateFail_Place
+                }
+            }
+            logger.info(`${__dirname}| %o`,result)
+     }catch(e){
+        logger.error(`${__dirname}|%o`,e)
+        return{
+            ok:false,
+            error:process.env.Transaction_ERROR
+        }
+     }
+        
+
     });
     return {
         ok:true

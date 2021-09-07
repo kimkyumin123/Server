@@ -12,7 +12,8 @@ export default gql`
         comments:[Comment]
         suggestions:Suggestion
         placeId:Int
-        hashtags:[HashTag]
+        place:Place
+        #hashtags:[HashTag]
     } 
     type HashTag{
         id:Int!

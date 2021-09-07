@@ -4,14 +4,23 @@ CREATE TABLE "User" (
     "userName" TEXT,
     "password" TEXT,
     "nickName" TEXT NOT NULL,
-    "email" TEXT,
+    "email" TEXT NOT NULL,
     "avatar" TEXT,
-    "bio" TEXT NOT NULL,
+    "bio" TEXT,
     "gender" TEXT,
     "ageRange" TEXT,
-    "uniqueValue" TEXT,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
+    "platformType" TEXT,
+
+    PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "Token" (
+    "id" SERIAL NOT NULL,
+    "token" TEXT NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     PRIMARY KEY ("id")
 );
@@ -21,9 +30,17 @@ CREATE TABLE "Suggestion" (
     "id" SERIAL NOT NULL,
     "like" INTEGER NOT NULL,
     "unLike" INTEGER NOT NULL,
-    "placeId" INTEGER NOT NULL,
     "reviewId" INTEGER NOT NULL,
     "userId" INTEGER NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "ReviewRoom" (
+    "id" SERIAL NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
@@ -40,6 +57,7 @@ CREATE TABLE "Review" (
     "upload" TEXT,
     "userId" INTEGER NOT NULL,
     "placeId" INTEGER NOT NULL,
+    "reviewRoomId" INTEGER,
 
     PRIMARY KEY ("id")
 );
@@ -52,10 +70,10 @@ CREATE TABLE "Place" (
     "title" TEXT NOT NULL,
     "address" TEXT NOT NULL,
     "zipCode" INTEGER,
-    "x" INTEGER NOT NULL,
-    "y" INTEGER NOT NULL,
+    "x" DOUBLE PRECISION NOT NULL,
+    "y" DOUBLE PRECISION NOT NULL,
     "category" TEXT,
-    "userId" INTEGER NOT NULL,
+    "uniqueId" TEXT NOT NULL,
 
     PRIMARY KEY ("id")
 );
@@ -82,26 +100,7 @@ CREATE TABLE "HashTag" (
 );
 
 -- CreateTable
-CREATE TABLE "AuthUser" (
-    "id" SERIAL NOT NULL,
-    "userId" INTEGER NOT NULL,
-    "oauth_provider" TEXT NOT NULL,
-    "accessToken" TEXT NOT NULL,
-    "refreshToken" TEXT NOT NULL,
-    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" TIMESTAMP(3) NOT NULL,
-
-    PRIMARY KEY ("id")
-);
-
--- CreateTable
 CREATE TABLE "_HashTagToReview" (
-    "A" INTEGER NOT NULL,
-    "B" INTEGER NOT NULL
-);
-
--- CreateTable
-CREATE TABLE "_CommentToHashTag" (
     "A" INTEGER NOT NULL,
     "B" INTEGER NOT NULL
 );
@@ -113,25 +112,28 @@ CREATE UNIQUE INDEX "User.userName_unique" ON "User"("userName");
 CREATE UNIQUE INDEX "User.nickName_unique" ON "User"("nickName");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "HashTag.hashtag_unique" ON "HashTag"("hashtag");
+CREATE UNIQUE INDEX "User.email_unique" ON "User"("email");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "AuthUser_userId_unique" ON "AuthUser"("userId");
+CREATE UNIQUE INDEX "Suggestion.reviewId_userId_unique" ON "Suggestion"("reviewId", "userId");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Suggestion_reviewId_unique" ON "Suggestion"("reviewId");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Review.userId_placeId_unique" ON "Review"("userId", "placeId");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Comment.reviewId_unique" ON "Comment"("reviewId");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "HashTag.hashtag_unique" ON "HashTag"("hashtag");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "_HashTagToReview_AB_unique" ON "_HashTagToReview"("A", "B");
 
 -- CreateIndex
 CREATE INDEX "_HashTagToReview_B_index" ON "_HashTagToReview"("B");
-
--- CreateIndex
-CREATE UNIQUE INDEX "_CommentToHashTag_AB_unique" ON "_CommentToHashTag"("A", "B");
-
--- CreateIndex
-CREATE INDEX "_CommentToHashTag_B_index" ON "_CommentToHashTag"("B");
-
--- AddForeignKey
-ALTER TABLE "Suggestion" ADD FOREIGN KEY ("placeId") REFERENCES "Place"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Suggestion" ADD FOREIGN KEY ("reviewId") REFERENCES "Review"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
@@ -140,28 +142,19 @@ ALTER TABLE "Suggestion" ADD FOREIGN KEY ("reviewId") REFERENCES "Review"("id") 
 ALTER TABLE "Suggestion" ADD FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Review" ADD FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "Review" ADD FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Review" ADD FOREIGN KEY ("userId") REFERENCES "Place"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "Review" ADD FOREIGN KEY ("placeId") REFERENCES "Place"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Place" ADD FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "Review" ADD FOREIGN KEY ("reviewRoomId") REFERENCES "ReviewRoom"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Comment" ADD FOREIGN KEY ("reviewId") REFERENCES "Review"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "AuthUser" ADD FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "_HashTagToReview" ADD FOREIGN KEY ("A") REFERENCES "HashTag"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "_HashTagToReview" ADD FOREIGN KEY ("B") REFERENCES "Review"("id") ON DELETE CASCADE ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "_CommentToHashTag" ADD FOREIGN KEY ("A") REFERENCES "Comment"("id") ON DELETE CASCADE ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "_CommentToHashTag" ADD FOREIGN KEY ("B") REFERENCES "HashTag"("id") ON DELETE CASCADE ON UPDATE CASCADE;

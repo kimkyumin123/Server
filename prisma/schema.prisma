@@ -76,7 +76,7 @@ model Review{
     place Place @relation(fields: [placeId],references:[id],onUpdate:Cascade)
     //리뷰 맵핑용
     reviewRoomId Int?
-    reviewRoom ReviewRoom? @relation(fields: [reviewRoomId],references:[id])
+    reviewRoom ReviewRoom? @relation(fields: [reviewRoomId],references:[id],onUpdate:Cascade,onDelete:Cascade)
     hashtags HashTag[]
     @@unique([userId,placeId])
 }
@@ -90,6 +90,7 @@ model Place{
     x Float //x좌표
     y Float //y좌표
     category String?
+    uniqueId String @unique
     //userId Int //장소 등록자    
     // user User @relation(fields: [userId],references:[id],onDelete:Cascade,onUpdate: Cascade)
     //suggestions Suggestion?
