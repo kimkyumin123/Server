@@ -66,7 +66,7 @@ model Review{
     title String
     content String
     upload String? 
-    userId Int
+    userId Int 
     //...
     user User @relation(fields: [userId],references:[id],onUpdate: Cascade)
     comments Comment[] 
@@ -78,7 +78,7 @@ model Review{
     reviewRoomId Int?
     reviewRoom ReviewRoom? @relation(fields: [reviewRoomId],references:[id],onUpdate:Cascade,onDelete:Cascade)
     hashtags HashTag[]
-    @@unique([userId,placeId])
+    
 }
 model Place{
     id Int @id @default(autoincrement()) 
@@ -106,7 +106,7 @@ model Comment{
     reviewId Int
     review Review @relation(fields: [reviewId],references:[id])
     // hashtags HashTag[]
-    @@unique([reviewId])
+    
 }
 model HashTag{
     id Int @id @default(autoincrement()) 

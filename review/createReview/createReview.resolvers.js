@@ -19,56 +19,47 @@ const createReviewResult = async(e,loggedInUser,resultRoom)=>{
             // logger.info(`${__dirname}| %o`,placeId)
             const resultPlace = await createPlace(e.place)
             
-            if(resultPlace===process.env.Transaction_ERROR){ //장소 트랜잭션실패
-                return{
-                    ok:false,
-                    error:process.env.Transaction_ERROR
-                }
-            }else if(resultPlace===process.env.CreateFail_Place){ //장소생성실패
-                return{
-                    ok:false,
-                    error:process.env.CreateFail_Place
-                }
+            if(resultPlace===process.env.Transaction_ERROR ||resultPlace===process.env.CreateFail_Place ){ //장소 트랜잭션실패
+                return resultPlace
             }else {
         
-
+                try{
                 //장소 연결(후에 유니크 값 찾아야함.)
-                const result = await client.review.create({
-                    data:{
-                        //수정
-                    title:e.title,
-                    //    upload:fileUrl,
-                    content:e.content,
-                    user:{
-                        connect:{
-                            
-                            id:loggedInUser.id
-                        }
-                    },
-                    place:{
-                        connect:{
-                                id:resultPlace
+                    const result = await client.review.create({
+                        data:{
+                            //수정
+                        title:e.title,
+                        //    upload:fileUrl,
+                        content:e.content,
+                        user:{
+                            connect:{
+                                
+                                id:loggedInUser.id
+                            }
+                        },
+                        place:{
+                            connect:{
+                                    id:resultPlace
+                            }
+                            },
+                        reviewRoom:{
+                            connect:{
+                                id:resultRoom.id
+                            }
                         }
                         },
-                    reviewRoom:{
-                        connect:{
-                            id:resultRoom.id
-                        }
+                    })
+                    if(!result){
+                        logger.info(`${__dirname}| NOTFOUND:::%o`,result)
+                        return process.env.CreateFail_Review
                     }
-                    },
-                })
-                if(!result){
-                    return{
-                        ok:false,
-                        error:process.env.CreateFail_Review
-                    }
+                    logger.info(`${__dirname}| %o`,result)
+                    //성공
+                    return true
+                }catch(e){
+                    logger.error(`${__dirname} | %o`,e)
+                    return process.env.Transaction_ERROR
                 }
-                logger.info(`${__dirname}| %o`,result)
-                //성공
-                return{
-                    ok:true
-                }
-
                     
             }
 
@@ -76,10 +67,7 @@ const createReviewResult = async(e,loggedInUser,resultRoom)=>{
          }catch(e){
             
             logger.error(`${__dirname}| %o`,e)
-            return{
-                ok:false,
-                error:process.env.CreateFail_Review
-            }
+            return process.env.CreateFail_Review
          }
 
 }
@@ -117,6 +105,7 @@ const createReviewFN= async(_,{review},{loggedInUser,logger})=>{
         logger.info(`${__dirname}| %o`,resultRoom)
      for(const i in review){
         result =await createReviewResult(review[i],loggedInUser,resultRoom)
+        console.log("result::",result)
         if(result===process.env.CreateFail_Review ||result===process.env.Transaction_ERROR){
             // 에러시 생성했던 룸 삭제
             const deleteRoom=await client.reviewRoom.delete({
@@ -128,7 +117,18 @@ const createReviewFN= async(_,{review},{loggedInUser,logger})=>{
             break;
         }
     };
-    return result
+    if(result===true){
+        return{
+            ok:true,
+            
+        }
+    }else{
+        return{
+            ok:false,
+            error:result
+        }
+    }
+    
 
 
 

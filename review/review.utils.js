@@ -17,28 +17,33 @@ export const createPlace= async (element)=>{
             return placeOverlap.id
         }
         //없을시 장소생성
-        else{         
-            const result = await client.place.create({
-                data:{
-                    title:element.title,
-                    address:element.address,
-                    zipCode:element.zipCode,
-                    x:element.x,
-                    y:element.y,
-                    category:element.category,
-                    uniqueId:element.placeId
+        else{
+            try{         
+                const result = await client.place.create({
+                    data:{
+                        title:element.title,
+                        address:element.address,
+                        zipCode:element.zipCode,
+                        x:element.x,
+                        y:element.y,
+                        category:element.category,
+                        uniqueId:element.placeId
 
 
+                    }
+
+                })
+                if(!result){
+                    return process.env.CreateFail_Place
                 }
-
-            })
-            if(!result){
-                return process.env.CreateFail_Place
-            }
-            logger.info(`${__dirname}| %o`,result)
-    
+                logger.info(`${__dirname}| %o`,result)
+                return result.id
+        }catch(e){
             logger.error(`${__dirname}|%o`,e)
             return process.env.Transaction_ERROR
+        }
+            
+            
         
         }
 
@@ -54,6 +59,10 @@ export const createPlace= async (element)=>{
 
 
     
+    
+}
+
+export const aboutPlaceReview = async()=>{
     
 }
 

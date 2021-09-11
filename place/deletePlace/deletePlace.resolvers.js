@@ -31,7 +31,9 @@ const deletePlaceFN= async(_,{id},{loggedInUser,logger})=>{
             }
         })
         logger.info(`${__dirname}| %o`,result)
-        
+        return{
+            ok:true
+        }
         
     }catch(e){
         logger.error(`${__dirname}|${e}`)
@@ -40,9 +42,7 @@ const deletePlaceFN= async(_,{id},{loggedInUser,logger})=>{
             error:process.env.DeleteFail_Place
         }
     }
-    return{
-        ok:true
-    }
+   
 }
 export default{
     Mutation:{
