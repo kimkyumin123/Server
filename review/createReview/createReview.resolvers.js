@@ -5,7 +5,11 @@ import { protectedResolver } from "../../user/users.utils"
 import { createPlace } from "../review.utils"
 const createReviewResult = async(e,loggedInUser,resultRoom)=>{
   //AWS S3 업로드
-    //    const fileUrl= await  uploadToS3(e.upload,loggedInUser.id,`review/${loggedInUser.id}`)
+        let  fileUrl=null
+        if(e.upload){
+             fileUrl= await  uploadToS3(e.upload,loggedInUser.id,`review/${loggedInUser.id}`)
+        }
+       
         //Content내용중 해시태그 분류 
         try{
             // const placeId = await client.place.findFirst({
@@ -29,7 +33,7 @@ const createReviewResult = async(e,loggedInUser,resultRoom)=>{
                         data:{
                             //수정
                         title:e.title,
-                        //    upload:fileUrl,
+                        ...(e.upload&&({upload:fileUrl})),
                         content:e.content,
                         user:{
                             connect:{

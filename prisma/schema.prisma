@@ -41,8 +41,8 @@ model Token{
 
 model Suggestion{
     id Int @id @default(autoincrement()) 
-    like Int
-    unLike Int
+    like Boolean @default(false)
+    unLike Boolean @default(false)
     //placeId Int
     //place Place @relation(fields: [placeId],references:[id])
     reviewId Int

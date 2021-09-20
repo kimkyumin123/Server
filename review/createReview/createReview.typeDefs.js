@@ -4,7 +4,7 @@ export default gql`
 
     input ReviewInput{
         title:String!,
-        # upload:Upload,
+        upload:Upload,
         content:String!,
         place:InputPlace
     }

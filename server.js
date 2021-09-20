@@ -178,7 +178,7 @@ app.post('/mail', async(req, res) => {
   }catch(e){
     console.log(e)
   }
-});
+});  
 app.get('/hello',(req,res)=>{
   res.send("hello")
 })
