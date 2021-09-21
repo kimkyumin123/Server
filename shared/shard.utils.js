@@ -22,4 +22,14 @@ export const uploadToS3 = async(avatar,userid,fodlerName)=>{
     .promise();
     console.log(ok)
     return ok.Location;
+    
+}
+export const deleteToS3 = async(fileUrl)=>{
+    await new AWS.S3().deleteObject({
+        Bucket: 'instaclone-upload-lee', // 사용자 버켓 이름
+        Key: 'image/helloworld.jpeg' // 버켓 내 경로
+      }, (err, data) => {
+        if (err) { throw err; }
+        console.log('s3 deleteObject ', data)
+    })
 }

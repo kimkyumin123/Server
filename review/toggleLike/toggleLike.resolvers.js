@@ -1,7 +1,8 @@
 import client from "../../client";
 import { protectedResolver } from "../../user/users.utils";
 
-
+// 전달받은 like가 true일경우 == 추천
+// 전달받은 like가 false일경우 == 비추천
 const toggleLikeFN = async(_,{reviewId,like},{loggedInUser,logger})=>{
     if(loggedInUser===process.env.AccessTokenExpiredError){
         logger.error(`${__dirname}|AccessTokenExpiredError`)
@@ -44,36 +45,35 @@ const toggleLikeFN = async(_,{reviewId,like},{loggedInUser,logger})=>{
                 reviewId
             }
         }
+        const suggestionResult = await client.suggestion.findUnique({
+            where:whereLike
+        })
+        logger.info(`${__dirname}|FindSuggestion::%o`,suggestionResult)
         //like is true or false
         if(like){  // 추천
-          
-            // 해당 유저 추천기능 중복검사
-            const unLikeResult = await client.suggestion.findUnique({
-                where:whereLike
-            })  
-            logger.info(`${__dirname}|FindSuggestion::%o`,unLikeResult)
-            
-            if(unLikeResult){// 이미 되어있을경우 추천 false
+            if(suggestionResult){ // 유저데이터가 있을경우
            
-                if(unLikeResult.like){     // 추천도 false일경우는 필드삭제
-                    //추천이 false
+                if(suggestionResult.like && !suggestionResult.unLike){     // 둘다 false가 되면 delete
                     const deleteSuggestion = await client.suggestion.delete({
-                        where:whereLike
+                        where:{
+                            id:suggestionResult.id
+                        }
                     })
                     logger.info(`${__dirname}|DeleteSuggestion::%o`,deleteSuggestion)
                 }
-                else{    //추천이 true일경우 업데이트
+                else{   // unLike가 false가 아닐경우
                 
                 const updateSuggestion = await client.suggestion.update({
-                    where:whereLike,
+                    where:{
+                        id:suggestionResult.id
+                    },
                     data:{
-                        like:true
+                        like:!suggestionResult.like
                     }
                 })
                 logger.info(`${__dirname}|UpdateSuggestion::%o`,updateSuggestion)
                 }
             }else{ // 해당 유저 없을경우 추천 OR 비추천 실행
-               
                 const createSuggestion = await client.suggestion.create({
                     data:{
                         review:{
@@ -94,31 +94,25 @@ const toggleLikeFN = async(_,{reviewId,like},{loggedInUser,logger})=>{
             // 응답 완료코드 전달
             return {
                 ok:true,
-        
             }
         }else{//비추천
-            
             // 해당 유저 비추천기능 중복검사
-      
-            
-            const likeResult = await client.suggestion.findUnique({
-                where:whereLike
-            })
-            logger.info(`${__dirname}|FindSuggestion::%o`,likeResult)
-        
-            if(likeResult){// 이미 되어있을경우 추천 false
-                if(likeResult.unLike){   //추천도 false일경우 필드삭제
-                 
+            if(suggestionResult){// 이미 되어있을경우 추천 false
+                if(suggestionResult.unLike && !suggestionResult.like){   //추천도 false일경우 필드삭제         
                     const deleteSuggestion = await client.suggestion.delete({
-                        where:whereLike
+                        where:{
+                            id:suggestionResult.id
+                        }
                     })
                     logger.info(`${__dirname}|DeleteSuggestion::%o`,deleteSuggestion)
-                }else{  // 비추천이 True일경우는 업데이트
+                }else{  // 추천이 True일경우는 업데이트
                   
                     const updateSuggestion = await client.suggestion.update({
-                        where:whereLike,
+                        where:{
+                            id:suggestionResult.id
+                        },
                         data:{
-                            like:false
+                            unLike:!suggestionResult.unLike
                         }
                     })
                     logger.info(`${__dirname}|UpdateSuggestion::%o`,updateSuggestion)
