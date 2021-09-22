@@ -8,6 +8,6 @@ export default{
                     like:true
              
                 }}),
-        unLikes:({id})=> client.suggestion.count({where:{reviewId:id,unlike:true}}) //싫어요 수 
+        unLikes:({id})=> client.suggestion.count({where:{reviewId:id,unLike:true}}) //싫어요 수 
     }
 }
