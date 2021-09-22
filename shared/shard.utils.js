@@ -33,3 +33,14 @@ export const deleteToS3 = async(fileUrl)=>{
         console.log('s3 deleteObject ', data)
     })
 }
+
+
+
+export const exceptionsHandler= async (e)=>{
+    console.log(e instanceof TypeError)
+    switch(e){
+        case e instanceof TypeError:
+            console.log("TYPE")
+            return "TYPEERORR"
+    }
+}

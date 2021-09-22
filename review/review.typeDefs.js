@@ -13,6 +13,8 @@ export default gql`
         suggestions:Suggestion
         placeId:Int
         place:Place
+        likes:Int
+        unLikes:Int
         #hashtags:[HashTag]
     } 
     type HashTag{
