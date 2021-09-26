@@ -1,6 +1,6 @@
 import { protectedResolver } from "../users.utils"
 
-const userLogoutFN=async(_,__,{loggedInUser})=>{
+const userLogoutFN=async(_,__,{loggedInUser,logger})=>{
     if(loggedInUser===process.env.Invaild_Token){
         return {
             ok:false,
@@ -18,6 +18,12 @@ const userLogoutFN=async(_,__,{loggedInUser})=>{
             error:process.env.CheckLogin
         }
     }
+    const result = await client.token.create({
+        data:{
+            token
+        }
+    })
+    logger.info(`${__dirname}| %o`,result)
     return {
         ok:true
     }
