@@ -28,6 +28,10 @@ export default gql`
         likes:Int
         "싫어요 수 "
         unLikes:Int
+        "좋아요 상태"
+        isLike:Boolean
+        "싫어요 상태"
+        isUnLike:Boolean
         #hashtags:[HashTag]
     } 
     type HashTag{
