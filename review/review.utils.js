@@ -66,3 +66,12 @@ export const aboutPlaceReview = async()=>{
     
 }
 
+export const processHashtags = (caption)=>{
+
+    const hashtags = caption.match(/#[\w]+/g )|| []
+    console.log("hashtags:::",hashtags)
+    return hashtags.map((hashtag)=>({
+          where:{hashtag},
+          create:{hashtag}
+      }))
+}

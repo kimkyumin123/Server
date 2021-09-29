@@ -32,7 +32,8 @@ export default gql`
         isLike:Boolean
         "싫어요 상태"
         isUnLike:Boolean
-        #hashtags:[HashTag]
+        "해시태그 "
+        hashtags:[HashTag]
     } 
     type HashTag{
         id:Int!

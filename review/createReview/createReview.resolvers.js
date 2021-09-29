@@ -2,7 +2,7 @@ import client from "../../client"
 import logger from "../../logger"
 import { uploadToS3 } from "../../shared/shard.utils"
 import { protectedResolver } from "../../user/users.utils"
-import { createPlace } from "../review.utils"
+import { createPlace, processHashtags } from "../review.utils"
 const createReviewResult = async(e,loggedInUser,resultRoom)=>{
   //AWS S3 업로드
         let  fileUrl=null
@@ -28,6 +28,14 @@ const createReviewResult = async(e,loggedInUser,resultRoom)=>{
             }else {
         
                 try{
+                //해시태그 로직
+                let hashtagObj = []
+                
+                if(e.hashtags){
+                     hashtagObj =processHashtags(e.hashtags)
+                     console.log("hashtagObj::",hashtagObj)
+                }
+                
                 //장소 연결(후에 유니크 값 찾아야함.)
                     const result = await client.review.create({
                         data:{
@@ -50,7 +58,12 @@ const createReviewResult = async(e,loggedInUser,resultRoom)=>{
                             connect:{
                                 id:resultRoom.id
                             }
-                        }
+                        },
+                        ...(hashtagObj.length> 0 &&{
+                            hashtags:{
+                                connectOrCreate: hashtagObj,
+                            }
+                        })
                         },
                     })
                     if(!result){
