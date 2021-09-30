@@ -1,8 +1,9 @@
 import client from "../../client"
+import { processHashtags } from "../../hashtag/hashtag.utils"
 import logger from "../../logger"
 import { uploadToS3 } from "../../shared/shard.utils"
 import { protectedResolver } from "../../user/users.utils"
-import { createPlace, processHashtags } from "../review.utils"
+import { createPlace} from "../review.utils"
 const createReviewResult = async(e,loggedInUser,resultRoom)=>{
   //AWS S3 업로드
         let  fileUrl=null
@@ -31,8 +32,8 @@ const createReviewResult = async(e,loggedInUser,resultRoom)=>{
                 //해시태그 로직
                 let hashtagObj = []
                 
-                if(e.hashtags){
-                     hashtagObj =processHashtags(e.hashtags)
+                if(e.content){
+                     hashtagObj =processHashtags(e.content)
                      console.log("hashtagObj::",hashtagObj)
                 }
                 
