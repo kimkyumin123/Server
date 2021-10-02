@@ -35,11 +35,6 @@ export default gql`
         "해시태그 "
         hashtags:[HashTag]
     } 
-    type HashTag{
-        id:Int!
-        hashTag:String
-        createdAt:String
-        updatedAt:String
-    }
+
 
 `

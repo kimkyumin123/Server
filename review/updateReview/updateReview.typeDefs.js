@@ -6,7 +6,8 @@ export default gql`
         title:String,
         upload:Upload,
         content:String,
-        place:InputPlace
+        place:InputPlace,
+        
 }
 
     type Mutation{

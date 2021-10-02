@@ -1,4 +1,5 @@
 import client from "../../client";
+import { processHashtags } from "../../hashtag/hashtag.utils";
 import logger from "../../logger";
 import { uploadToS3 } from "../../shared/shard.utils";
 import { protectedResolver } from "../../user/users.utils";
@@ -10,9 +11,15 @@ const updateReviewResult = async(e,loggedInUser)=>{
         const existReview= await client.review.findFirst({
             where:{
                 id:e.id
-            },select:{
-                id:true,
+            },
+            select:{
                 userId:true,
+                id:true,
+                hashtags:{
+                    select:{
+                        hashtag:true
+                    }
+                }
             }
         })
         logger.info(`${__dirname}|existReview::%o`,existReview)
@@ -41,6 +48,12 @@ const updateReviewResult = async(e,loggedInUser)=>{
                 return resultPlace
             }
         }
+        //해시태그 수정
+        let hashtagObj = []
+        if(e.content){
+            hashtagObj=processHashtags(e.content)
+        }
+        console.log("existReview.hashtags",existReview.hashtags)
         // 리뷰 업데이트
         const reviewResult = await client.review.update({
             where:{
@@ -54,8 +67,11 @@ const updateReviewResult = async(e,loggedInUser)=>{
                     connect:{
                         id:resultPlace
                     }
-                }})
-    
+                }}),
+                hashtags:{
+                    disconnect:existReview.hashtags,
+                    connectOrCreate:processHashtags(e.content)
+                }   
             }
         })
         logger.info(`${__dirname}|reviewResult::%o`,reviewResult)
