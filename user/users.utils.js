@@ -63,7 +63,7 @@ export const protectedResolver = (ourResolver)=>(root,args,context,info)=>{
 
 }
 
-// 토큰발급 
+// 초기 토큰발급 
 export const tokenIssuance = async(userId)=>{
     
     const accessToken = jwt.sign({ id: userId }, process.env.SECRET_KEY, {
@@ -90,7 +90,6 @@ export const tokenIssuance = async(userId)=>{
     return data;
 
 }
-
 // 토큰삭제
 export const tokenDelete = async()=>{
     // 삭제할 토큰을 모아둘 Table 생성해야함.
@@ -123,8 +122,11 @@ export const tokenUpdate = async(token)=>{
         //토큰 유효성검사
         const {id} = jwt.verify(token,process.env.SECRET_KEY)
         //토큰 발급
-        const data= tokenIssuance(id)
-        return data
+        //액세스토큰 발급
+        return jwt.sign({ id}, process.env.SECRET_KEY, {
+            expiresIn: '1d'
+        });
+        
     }catch(e){
         
         //리프레쉬토큰 만료

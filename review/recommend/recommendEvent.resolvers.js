@@ -3,7 +3,7 @@ import { protectedResolver } from "../../user/users.utils";
 
 // 전달받은 like가 true일경우 == 추천
 // 전달받은 like가 false일경우 == 비추천
-const toggleLikeFN = async(_,{reviewId,like},{loggedInUser,logger})=>{
+const recommendEventFN = async(_,{reviewId,like},{loggedInUser,logger})=>{
     if(loggedInUser===process.env.AccessTokenExpiredError){
         logger.error(`${__dirname}|AccessTokenExpiredError`)
         return{
@@ -156,7 +156,7 @@ const toggleLikeFN = async(_,{reviewId,like},{loggedInUser,logger})=>{
 }
 export default {
     Mutation:{
-        toggleLike:protectedResolver(toggleLikeFN)
+        recommendEvent:protectedResolver(recommendEventFN)
     }
 
 }

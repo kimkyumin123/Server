@@ -11,7 +11,7 @@ export default gql`
 
         """
 
-        toggleLike(reviewId:Int!,like:Boolean!):MutationResponse
+        recommendEvent(reviewId:Int!,like:Boolean!):MutationResponse
 
     }
 `

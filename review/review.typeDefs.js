@@ -25,9 +25,9 @@ export default gql`
         "장소"
         place:Place
         "좋아요 수"
-        likes:Int
+        getLikes:Int
         "싫어요 수 "
-        unLikes:Int
+        getUnLikes:Int
         "좋아요 상태"
         isLike:Boolean
         "싫어요 상태"
