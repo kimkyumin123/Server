@@ -22,7 +22,7 @@ export default gql`
         reviews:[Review]
         places:[Place]
         platformType:String
-        suggestions:Suggestion
+        suggestions:[Suggestion]
         # password:String! 요구 안할거임.
 
     }

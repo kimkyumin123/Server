@@ -16,6 +16,8 @@ export default gql`
         upload:Upload
         "생성유저ID"
         userId:Int
+        "해당 유저정보"
+        user:User
         "구현예정"
         comments:[Comment]
         "추천"
@@ -35,6 +37,16 @@ export default gql`
         "해시태그 "
         hashtags:[HashTag]
     } 
+    type reviewRoom{
+        "PK"
+        id:Int!
+        "생성날짜"
+        createdAt:String
+        "수정날짜"
+        updatedAt:String
+        "해당리뷰"
+        review:[Review]
+    }
 
 
 `

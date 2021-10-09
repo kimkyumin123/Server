@@ -70,6 +70,8 @@ const createCommentFN= async(_,{payload,reviewId},{loggedInUser,logger})=>{
 
 }
 export default{
-
-    createComment:protectedResolver(createCommentFN)
+    Mutation:{
+        createComment:protectedResolver(createCommentFN)
+    }
+    
 }

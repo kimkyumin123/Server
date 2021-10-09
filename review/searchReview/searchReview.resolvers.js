@@ -17,6 +17,9 @@ export default {
                 orderBy:{
                     updatedAt:"asc"
                 },
+                include:{
+                    user:true
+                },
                 take:10,
                 skip:lastId?1:0,
                 ...(lastId &&{cursor:{id:lastId}})  //cursor => 마지막 요소 저장
