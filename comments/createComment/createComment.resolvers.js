@@ -1,4 +1,5 @@
 import client from "../../client";
+import { processHashtags } from "../../hashtag/hashtag.utils";
 import { protectedResolver } from "../../user/users.utils";
 
 const createCommentFN= async(_,{payload,reviewId},{loggedInUser,logger})=>{
@@ -34,9 +35,11 @@ const createCommentFN= async(_,{payload,reviewId},{loggedInUser,logger})=>{
         //에러핸들링
         logger.error(`${__dirname}|NOTFOUND_REVIEWID|%o`,reviewId)
         return{
-
+            ok:false,
+            error:process.env.NotFound_Review
         }
     }
+  
     // 댓글생성
     try{
         const resultComent = await client.comment.create({
@@ -51,6 +54,9 @@ const createCommentFN= async(_,{payload,reviewId},{loggedInUser,logger})=>{
                     connect:{
                         id:loggedInUser.id
                     }
+                },
+                hashtag:{
+                    connectOrCreate:processHashtags(payload)
                 }
             }
 

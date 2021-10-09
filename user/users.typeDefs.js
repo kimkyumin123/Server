@@ -23,6 +23,7 @@ export default gql`
         places:[Place]
         platformType:String
         suggestions:[Suggestion]
+        comments:[Comment]
         # password:String! 요구 안할거임.
 
     }

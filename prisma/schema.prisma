@@ -24,7 +24,7 @@ model User{
     createdAt DateTime @default(now()) // 가입날짜
     updatedAt DateTime @updatedAt  // 업데이트 날짜
     reviews Review[]
-    
+    comments Comment[]
     platformType String?
     suggestions Suggestion[]
     
@@ -104,6 +104,9 @@ model Comment{
     updatedAt DateTime @updatedAt  // 업데이트 날짜
     payload String
     reviewId Int
+    userId Int
+    hashtag HashTag[]
+    user User @relation(fields: [userId],references:[id]) //유저 연결
     review Review @relation(fields: [reviewId],references:[id])
     // hashtags HashTag[]
     
@@ -111,7 +114,7 @@ model Comment{
 model HashTag{
     id Int @id @default(autoincrement()) 
     hashtag String @unique
-    //comments Comment[] //connectORCreate
+    comments Comment[] //connectORCreate
     reviews Review[]  //connectORCreate
     createdAt DateTime @default(now()) //생성날짜
     updatedAt DateTime @updatedAt  // 업데이트 날짜

@@ -8,10 +8,15 @@ export default{
               where:{userName},
               include:{
                   reviews:true,
-                  suggestions:true
+                  suggestions:true,
+                  comments:{
+                      include:{
+                          review:true
+                      }
+                  }
               }
             })
-            console.log(result)
+            
             return result
         }
     }
