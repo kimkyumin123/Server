@@ -55,7 +55,7 @@ const createCommentFN= async(_,{payload,reviewId},{loggedInUser,logger})=>{
                         id:loggedInUser.id
                     }
                 },
-                hashtag:{
+                hashtags:{
                     connectOrCreate:processHashtags(payload)
                 }
             }

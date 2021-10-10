@@ -22,7 +22,8 @@ export default{
                     like:true
                 }
             })
-            logger.info(`${__dirname}|isLike : %o`,result)
+      
+            logger.info(`${__dirname}|isLike : %o`,result?true:false)
             if(!result){
                 return false
             }
@@ -43,7 +44,7 @@ export default{
                     unLike:true
                 }
             })
-            logger.info(`${__dirname}|isUnLike : %o`,result)
+            logger.info(`${__dirname}|isUnLike : %o`,result?true:false)
             if(!result){
                 return false
             }

@@ -19,7 +19,7 @@ export default gql`
         "해당리뷰ID"
         reviewId:Int!
         "해시태그"
-        hashtag:[HashTag]
+        hashtags:[HashTag]
         "작성자 본인확인"
         isMe:Boolean!
     }
