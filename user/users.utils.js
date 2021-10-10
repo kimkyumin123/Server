@@ -5,7 +5,6 @@ import logger from '../logger';
 // 토큰 유효성검사 
 export const getUser = async(token) =>{
     try{ 
-        console.log(token)
         //토큰이 없을때
         if(!token){
             //수정필요
@@ -13,6 +12,18 @@ export const getUser = async(token) =>{
         }
         
         const {id} = jwt.verify(token,process.env.SECRET_KEY)
+
+        // 폐기토큰 검사
+        const discardToken = await client.token.findFirst({
+            where:{
+                token
+            }
+        })
+        if(discardToken){
+            logger.error(`${__dirname}|This Token discardToken :: %o`,discardToken)
+            //에러 핸들링 번호 변경필요
+            return -888
+        }
         const user =await client.user.findUnique({where:{id}});
         
         if(user){

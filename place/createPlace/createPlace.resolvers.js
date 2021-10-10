@@ -1,29 +1,15 @@
 import client from "../../client";
+import { exceptionsHandler } from "../../shared/shard.utils";
 import { protectedResolver } from "../../user/users.utils";
 
 
 const createPlaceFN= async(_,{place},{loggedInUser,logger})=>{
     // 로그인 상태-> [Place]형태로 전달받은 데이터 낱개로 DB 트랜잭션
-    if(loggedInUser===process.env.AccessTokenExpiredError){
-        logger.error(`${__dirname}|AccessTokenExpiredError`)
+    const exceptionResult = await  exceptionsHandler(loggedInUser)
+    if(exceptionResult!==1){
         return{
             ok:false,
-            error:process.env.AccessTokenExpiredError
-        }
-
-    }
-    else if(loggedInUser===process.env.Invaild_Token){
-        logger.error(`${__dirname}|Invaild_Token`)
-        return{
-            ok:false,
-            error:process.env.Invaild_Token
-        }
-    }
-    else if(!loggedInUser){
-        logger.error(`${__dirname}|UserNotFound`)
-        return{
-            ok:false,
-            error:process.env.CheckLogin
+            error:exceptionResult
         }
     }
     place.forEach(async(element) => {

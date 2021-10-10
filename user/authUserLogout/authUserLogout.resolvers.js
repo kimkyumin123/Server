@@ -1,23 +1,14 @@
 import client from "../../client";
+import { exceptionsHandler } from "../../shared/shard.utils";
 import { protectedResolver } from "../users.utils";
 
 
-const authUserLogoutFN = async(_,{token},{logger,loggedInUser})=>{
-    if(loggedInUser===process.env.Invaild_Token){
-        return {
-            ok:false,
-            error:process.env.Invaild_Token
-        }
-    }else if(loggedInUser===process.env.AccessTokenExpiredError){
+const authUserLogoutFN = async(_,__,{logger,loggedInUser,token})=>{
+    const exceptionResult = await  exceptionsHandler(loggedInUser)
+    if(exceptionResult!==1){
         return{
             ok:false,
-            error:process.env.AccessTokenExpiredError
-        }
-    }
-    else if(!loggedInUser){
-        return{
-            ok:false,
-            error:process.env.CheckLogin
+            error:exceptionResult
         }
     }
     const result = await client.token.create({

@@ -1,7 +1,7 @@
 import client from "../../client"
 import { processHashtags } from "../../hashtag/hashtag.utils"
 import logger from "../../logger"
-import { uploadToS3 } from "../../shared/shard.utils"
+import { exceptionsHandler, uploadToS3 } from "../../shared/shard.utils"
 import { protectedResolver } from "../../user/users.utils"
 import { createPlace} from "../review.utils"
 const createReviewResult = async(e,loggedInUser,resultRoom)=>{
@@ -91,26 +91,11 @@ const createReviewResult = async(e,loggedInUser,resultRoom)=>{
 }
 const createReviewFN= async(_,{review},{loggedInUser,logger})=>{
     //로그인 체크 -> 전달받은 JSON 형태 리뷰 배열 생성. 
-    if(loggedInUser===process.env.AccessTokenExpiredError){
-        logger.error(`${__dirname}|AccessTokenExpiredError`)
+    const exceptionResult = await  exceptionsHandler(loggedInUser)
+    if(exceptionResult!==1){
         return{
             ok:false,
-            error:process.env.AccessTokenExpiredError
-        }
-
-    }
-    else if(loggedInUser===process.env.Invaild_Token){
-        logger.error(`${__dirname}|Invaild_Token`)
-        return{
-            ok:false,
-            error:process.env.Invaild_Token
-        }
-    }
-    else if(!loggedInUser){
-        logger.error(`${__dirname}|UserNotFound`)
-        return{
-            ok:false,
-            error:process.env.CheckLogin
+            error:exceptionResult
         }
     }
      let result=null

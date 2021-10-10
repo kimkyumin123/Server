@@ -1,30 +1,16 @@
 import client from "../../client";
 import { processHashtags } from "../../hashtag/hashtag.utils";
+import { exceptionsHandler } from "../../shared/shard.utils";
 import { protectedResolver } from "../../user/users.utils";
 
 const createCommentFN= async(_,{payload,reviewId},{loggedInUser,logger})=>{
 
     //유저 유효성검사
-    if(loggedInUser===process.env.AccessTokenExpiredError){
-        logger.error(`${__dirname}|AccessTokenExpiredError`)
+    const exceptionResult = await  exceptionsHandler(loggedInUser)
+    if(exceptionResult!==1){
         return{
             ok:false,
-            error:process.env.AccessTokenExpiredError
-        }
-
-    }
-    else if(loggedInUser===process.env.Invaild_Token){
-        logger.error(`${__dirname}|Invaild_Token`)
-        return{
-            ok:false,
-            error:process.env.Invaild_Token
-        }
-    }
-    else if(!loggedInUser){
-        logger.error(`${__dirname}|UserNotFound`)
-        return{
-            ok:false,
-            error:process.env.CheckLogin
+            error:exceptionResult
         }
     }
     //게시글 확인

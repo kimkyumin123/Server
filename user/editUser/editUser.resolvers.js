@@ -1,28 +1,15 @@
 import client from "../../client"
-import { uploadToS3 } from "../../shared/shard.utils"
+import { exceptionsHandler, uploadToS3 } from "../../shared/shard.utils"
 import { protectedResolver } from "../users.utils"
 const editUser = async(_,{nickName,bio,avatar,gender,ageRange,password},{loggedInUser,logger})=>{
 //로그인된 유저 확인 -> 토큰 유효성검사 ->닉네임 중복검사 ->프로필사진 변경시 서버 업로드-> DB 트랜잭션 -> ok Return
-    if(loggedInUser===process.env.AccessTokenExpiredError){
+    const exceptionResult = await  exceptionsHandler(loggedInUser)
+    if(exceptionResult!==1){
         return{
             ok:false,
-            error:process.env.AccessTokenExpiredError
-        }
-
-    }
-    else if(loggedInUser===process.env.Invaild_Token){
-        return{
-            ok:false,
-            error:process.env.Invaild_Token
+            error:exceptionResult
         }
     }
-    else if(!loggedInUser){
-        return{
-            ok:false,
-            error:process.env.CheckLogin
-        }
-    }
-    
 
     let avatarUrl = null
     let uglyPassword = null

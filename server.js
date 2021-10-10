@@ -58,6 +58,7 @@ const server = new ApolloServer({
     
     return{
       loggedInUser:await getUser(req.headers.authorization?req.headers.authorization.substr(7):null),
+      token:req.headers.authorization?req.headers.authorization.substr(7):null,
       logger:logger
 
       

@@ -36,6 +36,8 @@ export default gql`
         isUnLike:Boolean
         "해시태그 "
         hashtags:[HashTag]
+        "에러코드"
+        errorCode:Int
     } 
     type reviewRoom{
         "PK"

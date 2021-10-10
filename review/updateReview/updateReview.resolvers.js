@@ -1,7 +1,7 @@
 import client from "../../client";
 import { processHashtags } from "../../hashtag/hashtag.utils";
 import logger from "../../logger";
-import { uploadToS3 } from "../../shared/shard.utils";
+import { exceptionsHandler, uploadToS3 } from "../../shared/shard.utils";
 import { protectedResolver } from "../../user/users.utils";
 import { createPlace } from "../review.utils";
 
@@ -83,23 +83,11 @@ const updateReviewResult = async(e,loggedInUser)=>{
 }
 const updateReviewFN= async(_,{review},{logger,loggedInUser})=>{
     //유저 로그인 확인
-    if(loggedInUser===process.env.AccessTokenExpiredError){
+    const exceptionResult = await  exceptionsHandler(loggedInUser)
+    if(exceptionResult!==1){
         return{
             ok:false,
-            error:process.env.AccessTokenExpiredError
-        }
-
-    }
-    else if(loggedInUser===process.env.Invaild_Token){
-        return{
-            ok:false,
-            error:process.env.Invaild_Token
-        }
-    }
-    else if(!loggedInUser){
-        return{
-            ok:false,
-            error:process.env.CheckLogin
+            error:exceptionResult
         }
     }
     // 결과 값 확인용도

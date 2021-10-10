@@ -1,4 +1,5 @@
 import client from "../client";
+import { exceptionsHandler } from "../shared/shard.utils";
 
 export default{
     Review:{
@@ -10,6 +11,10 @@ export default{
                 }}),
         getUnLikes:({id})=> client.suggestion.count({where:{reviewId:id,unLike:true}}), //싫어요 수 
         isLike:async({id},_,{loggedInUser,logger})=>{
+            const exceptionResult = await  exceptionsHandler(loggedInUser)
+            if(exceptionResult!==1){
+                return null
+            }
             const whereLike={
                 reviewId_userId:{
                     userId:loggedInUser.id,
@@ -32,6 +37,10 @@ export default{
 
         },
         isUnLike:async({id},_,{loggedInUser,logger})=> {
+            const exceptionResult = await  exceptionsHandler(loggedInUser)
+            if(exceptionResult!==1){
+                return null
+            }
             const whereLike={
                 reviewId_userId:{
                     userId:loggedInUser.id,

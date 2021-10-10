@@ -1,29 +1,15 @@
 import client from "../../client";
+import { exceptionsHandler } from "../../shared/shard.utils";
 import { protectedResolver } from "../../user/users.utils";
 
 // 전달받은 like가 true일경우 == 추천
 // 전달받은 like가 false일경우 == 비추천
 const recommendEventFN = async(_,{reviewId,like},{loggedInUser,logger})=>{
-    if(loggedInUser===process.env.AccessTokenExpiredError){
-        logger.error(`${__dirname}|AccessTokenExpiredError`)
+    const exceptionResult = await  exceptionsHandler(loggedInUser)
+    if(exceptionResult!==1){
         return{
             ok:false,
-            error:process.env.AccessTokenExpiredError
-        }
-
-    }
-    else if(loggedInUser===process.env.Invaild_Token){
-        logger.error(`${__dirname}|Invaild_Token`)
-        return{
-            ok:false,
-            error:process.env.Invaild_Token
-        }
-    }
-    else if(!loggedInUser){
-        logger.error(`${__dirname}|UserNotFound`)
-        return{
-            ok:false,
-            error:process.env.CheckLogin
+            error:exceptionResult
         }
     }
     //좋아요 싫어요 따로 구현

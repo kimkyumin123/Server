@@ -1,5 +1,6 @@
 import client from "../../client";
 import logger from "../../logger";
+import { exceptionsHandler } from "../../shared/shard.utils";
 import { protectedResolver } from "../../user/users.utils";
 
 const updatePlaceResult = async(e)=>{
@@ -41,23 +42,11 @@ const updatePlaceResult = async(e)=>{
     }
 }
 const updatePlaceFN= async(_,{place},{logger,loggedInUser})=>{
-    if(loggedInUser===process.env.AccessTokenExpiredError){
+    const exceptionResult = await  exceptionsHandler(loggedInUser)
+    if(exceptionResult!==1){
         return{
             ok:false,
-            error:process.env.AccessTokenExpiredError
-        }
-
-    }
-    else if(loggedInUser===process.env.Invaild_Token){
-        return{
-            ok:false,
-            error:process.env.Invaild_Token
-        }
-    }
-    else if(!loggedInUser){
-        return{
-            ok:false,
-            error:process.env.CheckLogin
+            error:exceptionResult
         }
     }
     // 결과 값 확인용도

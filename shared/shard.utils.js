@@ -1,4 +1,5 @@
 import AWS from 'aws-sdk'
+import logger from '../logger';
 
 AWS.config.update({
     accessKeyId:process.env.AWS_KEY,
@@ -37,7 +38,29 @@ export const deleteToS3 = async(fileUrl)=>{
 
 
 export const exceptionsHandler= async (e)=>{
-    console.log(e instanceof TypeError)
+    console.log(e)
+
+    // ================================ LoggedInUser Exception ================================
+    if(e===process.env.AccessTokenExpiredError){
+            logger.error(`${__dirname}|AccessTokenExpiredError`)
+            return process.env.AccessTokenExpiredError
+        }
+    else if(e===process.env.Invaild_Token){
+        logger.error(`${__dirname}|Invaild_Token`)
+        return process.env.Invaild_Token
+    }
+    else if(!e){
+        logger.error(`${__dirname}|UserNotFound`)
+        return process.env.CheckLogin
+    }
+    // 폐기토큰 사용 핸들링 
+    else if(e===-888){
+        logger.error(`${__dirname}|This Token discardToken `)
+        // 에러코드 변경필요!
+        return -888
+    }
+    // ================================ LoggedInUser Exception ================================
+    return 1
     switch(e){
         case e instanceof TypeError:
             console.log("TYPE")
