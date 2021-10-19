@@ -30,10 +30,10 @@ const updateCommentFN=async(_,{id,payload},{loggedInUser,logger})=>{
         if(!existComment){
             //Error Handling
             logger.error(`${__dirname}|NOTFOUND_COMMENTID|%o`,id)
-            //에러코드 업데이트 필요
+            
             return{
                 ok:false,
-                error:-0
+                error:process.env.NotFound_Comment
             }
         }
         console.log(existComment.hashtags)

@@ -54,10 +54,10 @@ export const exceptionsHandler= async (e)=>{
         return process.env.CheckLogin
     }
     // 폐기토큰 사용 핸들링 
-    else if(e===-888){
+    else if(e===process.env.DiscardToken){
         logger.error(`${__dirname}|This Token discardToken `)
-        // 에러코드 변경필요!
-        return -888
+        
+        return process.env.DiscardToken 
     }
     // ================================ LoggedInUser Exception ================================
     return 1

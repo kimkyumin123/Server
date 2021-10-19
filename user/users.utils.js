@@ -22,7 +22,7 @@ export const getUser = async(token) =>{
         if(discardToken){
             logger.error(`${__dirname}|This Token discardToken :: %o`,discardToken)
             //에러 핸들링 번호 변경필요
-            return -888
+            return process.env.DiscardToken
         }
         const user =await client.user.findUnique({where:{id}});
         
