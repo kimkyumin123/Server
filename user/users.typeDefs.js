@@ -29,7 +29,8 @@ export default gql`
     }
 
     type Query{
-        userCheck(email:String,nickName:String):QueryResponse
+        # 유저에 대한 유효성검사 
+        userCheck(email:String,nickName:String,userName:String):QueryResponse
     }
 
 
