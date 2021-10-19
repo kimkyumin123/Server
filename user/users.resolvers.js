@@ -4,15 +4,15 @@ export default{
     Query:{
         userCheck:async(_,{nickName,email,userName},{logger})=>{
             //userName 체크
-            if(nickName){
+            if(userName){
                 const userCheck = await client.user.findUnique({
-                    where:{nickName},
+                    where:{userName},
                     select:{
                         userName:true
                     }
                 })
                 if(userCheck){
-                    logger.error(`${__dirname}|${nickName} is AlreadyUserName`)
+                    logger.error(`${__dirname}|${userName} is AlreadyUserName`)
                     return{
                         ok:false,
                         error:process.env.Already_UserName
