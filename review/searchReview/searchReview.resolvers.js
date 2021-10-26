@@ -3,10 +3,11 @@ import { exceptionsHandler } from "../../shared/shard.utils"
 
 export default {
     Query:{
-        searchReview:async(_,{title,category,lastId},{loggedInUser,logger})=>{
+        searchReview:async(_,{id,title,category,lastId},{loggedInUser,logger})=>{
             //유저 유효성검사
             const exceptionResult = await  exceptionsHandler(loggedInUser)
             if(exceptionResult!==1){
+                logger.error(`${__dirname}|exceptionsHandler ::: |  %o`,exceptionResult)
                 return [
                    { "errorCode":exceptionResult}
                 ]
@@ -14,6 +15,18 @@ export default {
             //title 값으로 시작하는 장소 올림차순 정렬 (업데이트날짜 기준)-> result ===null이면 검색결과 없음
             //카테고리별 검색
             try{
+                if(id){
+                    const uniqueReview= await client.review.findUnique({
+                        where:{
+                            id
+                        }
+                    })
+                    logger.info(`${__dirname}|uniqueReview ::: |  %o`,uniqueReview)
+                    return [
+                         uniqueReview
+                    ]
+                    
+                }
             const result = await client.review.findMany({
                 
                 where:{
@@ -38,7 +51,7 @@ export default {
             
             // logger.info('SearchPlace | %o',result)
             logger.info(`${__dirname}|SearchPlace ::: |  %o`,result)
-            console.log(result)
+            
             return result
         }catch(e){
             //트랜잭션 에러
