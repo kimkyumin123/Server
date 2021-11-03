@@ -1,5 +1,6 @@
 import client from "../../client"
 import bcrypt from "bcrypt"
+import { userCheck } from "../users.utils"
 export default{
 
 
@@ -16,29 +17,15 @@ export default{
              }
 
 
-            const user = await client.user.findFirst({
-                where:{
-                    OR:[
-                        {
-                            userName
-                        },{
-                            email
-                        },{
-                            nickName
-                        }
-
-
-                    ]
-                }
-            })
-  
-            if(user){
-    
+             // User 유효성검사
+            const result  =await userCheck(userName,nickName,email)
+            if(result){
                 return{
                     ok:false,
-                    error:process.env.Already_User
+                    error:result
                 }
             }
+            
 
            
 

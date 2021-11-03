@@ -9,11 +9,11 @@ export default gql`
         "작성유저ID"
         userId:Int!
         "생성날짜"
-        createdAt:String
+        createdAt:String!
         "수정날짜"
-        updatedAt:String
+        updatedAt:String!
         "댓글내용"
-        payload:String
+        payload:String!
         "해당리뷰"
         review:Review!
         "해당리뷰ID"

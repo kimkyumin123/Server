@@ -15,9 +15,9 @@ type Place{
     "PK"
     id:Int!
     "생성날짜"
-    createdAt:String
+    createdAt:String!
     "수정날짜"
-    updatedAt:String
+    updatedAt:String!
     "제목"
     title:String!
     "주소"

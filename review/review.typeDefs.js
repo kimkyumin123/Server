@@ -5,11 +5,11 @@ export default gql`
         "PK"
         id:Int!
         "생성날짜"
-        createdAt:String
+        createdAt:String!
         "수정날짜"
-        updatedAt:String
+        updatedAt:String!
         "제목"
-        title:String
+        title:String!
         "내용"
         content:String
         "사진"
@@ -17,7 +17,7 @@ export default gql`
         "생성유저ID"
         userId:Int
         "해당 유저정보"
-        user:User
+        user:User!
         "구현예정"
         comments:[Comment]
         "추천"
