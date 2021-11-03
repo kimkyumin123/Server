@@ -38,7 +38,7 @@ const updateReviewResult = async(e,loggedInUser)=>{
         //AWS S3 Upload
         let  fileUrl=null
         if(e.upload){
-             fileUrl= await  uploadToS3(e.upload,loggedInUser.id,`review/${loggedInUser.id}`)
+             fileUrl= await  uploadToS3(e.upload,loggedInUser.userName,`review`)
         }
         // placeCreate
         let resultPlace=null

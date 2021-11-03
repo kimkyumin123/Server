@@ -6,9 +6,12 @@ import { protectedResolver } from "../../user/users.utils"
 import { createPlace} from "../review.utils"
 const createReviewResult = async(e,loggedInUser,resultRoom)=>{
   //AWS S3 업로드
+    
         let  fileUrl=null
         if(e.upload){
-             fileUrl= await  uploadToS3(e.upload,loggedInUser.id,`review/${loggedInUser.id}`)
+            
+             fileUrl= await  uploadToS3(e.upload,loggedInUser.userName,`review`)
+             console.log("fileUrl::",fileUrl)
         }
        
         //Content내용중 해시태그 분류 

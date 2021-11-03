@@ -1,6 +1,7 @@
 import client from "../../client"
 import bcrypt from "bcrypt"
 import { userCheck } from "../users.utils"
+import { uploadToS3 } from "../../shared/shard.utils"
 export default{
 
 
@@ -25,7 +26,12 @@ export default{
                     error:result
                 }
             }
-            
+
+            // AWS S3
+            let  fileUrl=null
+            if(avatar){
+                 fileUrl= await  uploadToS3(avatar,userName,`user`)
+            }
 
            
 
@@ -36,7 +42,7 @@ export default{
                     data:{
                         userName,
                         email,
-                        ...(avatar&&{avatar}),
+                        ...(avatar&&{avatar:fileUrl}),
                         ...(password&&{password:uglyPassword}),
                         nickName,
                         bio

@@ -30,7 +30,7 @@ const editUser = async(_,{nickName,bio,avatar,gender,ageRange,password},{loggedI
     }
     // AWS S3 업로드 
     if(avatar){
-        avatarUrl= await  uploadToS3(avatar,loggedInUser.id,"profile")
+        avatarUrl= await  uploadToS3(avatar,loggedInUser.userName,`user`)
     }
 
     // DB 트랜잭션

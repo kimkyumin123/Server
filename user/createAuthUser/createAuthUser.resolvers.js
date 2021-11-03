@@ -1,5 +1,6 @@
 import { token } from "morgan"
 import client from "../../client"
+import { uploadToS3 } from "../../shared/shard.utils"
 import { userProfile } from "../auth/kakaoAuth.utils"
 import { naver_auth } from "../auth/naverAuth.utils"
 
@@ -53,6 +54,11 @@ export default{
                     ok:false,
                     error:process.env.Already_User
                 }
+            }
+            //AWS S3
+            let  fileUrl=null
+            if(avatar){
+                 fileUrl= await  uploadToS3(avatar,userName,`user`)
             }
             const resultUser = await client.user.create({
                 data:{
