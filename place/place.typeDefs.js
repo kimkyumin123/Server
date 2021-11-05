@@ -1,41 +1,40 @@
-import { gql } from "apollo-server-express";
+import { gql } from 'apollo-server-express';
 
 export default gql`
-input InputPlace{
-    title:String!
-    address:String!
-    zipCode:Int
-    x:Float!
-    y:Float!
-    category:String
-    placeId:String!
-
-}
-type Place{
+  input InputPlace {
+    title: String!
+    address: String!
+    zipCode: Int
+    x: Float!
+    y: Float!
+    category: String
+    placeId: String!
+  }
+  type Place {
     "PK"
-    id:Int!
+    id: Int!
     "생성날짜"
-    createdAt:String!
+    createdAt: String!
     "수정날짜"
-    updatedAt:String!
+    updatedAt: String!
     "제목"
-    title:String!
+    title: String!
     "주소"
-    address:String!
+    address: String!
     "우편번호"
-    zipCode:Int
+    zipCode: Int
     "x 좌표"
-    x:Float!
+    x: Float!
     "y 좌표"
-    y:Float!
+    y: Float!
     "카테고리"
-    category:String
+    category: String
     "VWorld Unique ID"
-    uniqueId:String
+    uniqueId: String
     # userId:Int
     # reviews:[Review]
-}
-type Query{
-    placeAbout(placeId:String!):[Review]
-}
-`
+  }
+  type Query {
+    placeAbout(placeId: String!): [Review]
+  }
+`;

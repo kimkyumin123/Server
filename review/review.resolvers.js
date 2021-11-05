@@ -1,19 +1,19 @@
-import client from "../client";
-import { exceptionsHandler } from "../shared/shard.utils";
+import client from '../client';
+import { exceptionsHandler } from '../shared/shard.utils';
 
 export default {
   Review: {
     getLikes: ({ id }) =>
       client.suggestion.count(
         {
-          //좋아요수
+          // 좋아요수
           where: {
             reviewId: id,
             like: true,
           },
-        } ?? 0
+        } ?? 0,
       ),
-    getUnLikes: ({ id }) => client.suggestion.count({ where: { reviewId: id, unLike: true } } ?? 0), //싫어요 수
+    getUnLikes: ({ id }) => client.suggestion.count({ where: { reviewId: id, unLike: true } } ?? 0), // 싫어요 수
 
     isLike: async ({ id }, _, { loggedInUser, logger }) => {
       const exceptionResult = await exceptionsHandler(loggedInUser);

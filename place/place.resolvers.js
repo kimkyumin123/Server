@@ -1,11 +1,11 @@
-import client from "../client";
+import client from '../client';
 
 export default {
   Query: {
-    //로그인체크?=> 일단 X
+    // 로그인체크?=> 일단 X
 
     placeAbout: async (_, { placeId, lastId }, { logger }) => {
-      //해당 장소 유효성 검사
+      // 해당 장소 유효성 검사
       try {
         const placeResult = await client.place.findUnique({
           where: {
@@ -26,7 +26,7 @@ export default {
           error: process.env.Transaction_ERROR,
         };
       }
-      //해당 장소에 대한 리뷰 검색
+      // 해당 장소에 대한 리뷰 검색
       try {
         const reviewResult = await client.review.findMany(
           {
@@ -34,12 +34,12 @@ export default {
               placeId: placeResult.id,
             },
             orderBy: {
-              updatedAt: "asc",
+              updatedAt: 'asc',
             },
             take: 10,
             skip: lastId ? 1 : 0,
-            ...(lastId && { cursor: { id: lastId } }), //cursor => 마지막 요소 저장
-          } ?? []
+            ...(lastId && { cursor: { id: lastId } }), // cursor => 마지막 요소 저장
+          } ?? [],
         );
         logger.info(`${__dirname}|%o`, reviewResult);
         return reviewResult;

@@ -1,8 +1,7 @@
-import { gql } from "apollo-server-core";
+import { gql } from 'apollo-server-core';
 
 export default gql`
-    type Mutation{
-        createComment(payload:String!,reviewId:Int!):MutationResponse
-    }
-    
-`
+  type Mutation {
+    createComment(payload: String!, reviewId: Int!): MutationResponse
+  }
+`;

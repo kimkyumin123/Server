@@ -1,4 +1,4 @@
-import client from "../../client";
+import client from '../../client';
 
 export default {
   Query: {
@@ -9,7 +9,7 @@ export default {
         },
       });
       logger.info(`${__dirname}| %o`, placeResult);
-      //장소없을시
+      // 장소없을시
       if (!placeResult) {
         logger.error(`${__dirname}|NOTFOUND ::: %o`, placeResult);
         return null;
@@ -21,12 +21,12 @@ export default {
               placeId: placeResult.id,
             },
             orderBy: {
-              updatedAt: "asc",
+              updatedAt: 'asc',
             },
             take: 10,
             skip: lastId ? 1 : 0,
-            ...(lastId && { cursor: { id: lastId } }), //cursor => 마지막 요소 저장
-          } ?? []
+            ...(lastId && { cursor: { id: lastId } }), // cursor => 마지막 요소 저장
+          } ?? [],
         );
         logger.info(`${__dirname}|%o`, reviewResult);
         return reviewResult;
