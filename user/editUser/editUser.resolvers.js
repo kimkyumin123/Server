@@ -1,4 +1,5 @@
 import client from "../../client"
+import bcrypt from "bcrypt"
 import { exceptionsHandler, uploadToS3 } from "../../shared/shard.utils"
 import { protectedResolver } from "../users.utils"
 const editUser = async(_,{nickName,bio,avatar,gender,ageRange,password},{loggedInUser,logger})=>{
@@ -18,16 +19,16 @@ const editUser = async(_,{nickName,bio,avatar,gender,ageRange,password},{loggedI
         uglyPassword = await bcrypt.hash(password,10);
     }
     //닉네임 중복검사
-    const user = await client.user.findUnique({
-        where:{nickName},
-        select:{id:true}
-    })
-    if(user){
-        return{
-            ok:false,
-            error:process.env.Already_Nickname
-        }
-    }
+    // const user = await client.user.findUnique({
+    //     where:{id:loggedInUser.id},
+    //     select:{id:true}
+    // })
+    // if(user){
+    //     return{
+    //         ok:false,
+    //         error:process.env.Already_Nickname
+    //     }
+    // }
     // AWS S3 업로드 
     if(avatar){
         avatarUrl= await  uploadToS3(avatar,loggedInUser.userName,`user`)

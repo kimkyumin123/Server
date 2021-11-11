@@ -4,15 +4,19 @@ export default gql`
     input UpdateReviewInput{
         id:Int!,
         title:String,
-        upload:Upload,
+        
         content:String,
         place:InputPlace,
         
 }
+    input UpdateUploadInput{
+        upload:Upload,
+    }
 
     type Mutation{
         updateReview(
-            review:[UpdateReviewInput]
-        ):MutationResponse
+            review:[UpdateReviewInput!]!,
+            upload:[UpdateUploadInput!]!
+        ):MutationResponse!
     }
 `

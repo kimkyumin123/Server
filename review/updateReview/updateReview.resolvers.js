@@ -5,12 +5,12 @@ import { exceptionsHandler, uploadToS3 } from "../../shared/shard.utils";
 import { protectedResolver } from "../../user/users.utils";
 import { createPlace } from "../review.utils";
 
-const updateReviewResult = async(e,loggedInUser)=>{
+const updateReviewResult = async(review,upload,loggedInUser)=>{
     try{
         // 해당 리뷰 유효확인
         const existReview= await client.review.findFirst({
             where:{
-                id:e.id
+                id:review.id
             },
             select:{
                 userId:true,
@@ -30,47 +30,47 @@ const updateReviewResult = async(e,loggedInUser)=>{
        }
     
         if(!existReview){//리뷰가 없을경우
-            logger.info(`${__dirname}|NOTFOUND_Review::${e.id}`)
+            logger.info(`${__dirname}|NOTFOUND_Review::${review.id}`)
             return process.env.NotFound_Review
         }
         //AWS S3 Delete
 
         //AWS S3 Upload
         let  fileUrl=null
-        if(e.upload){
-             fileUrl= await  uploadToS3(e.upload,loggedInUser.userName,`review`)
+        if(upload){
+             fileUrl= await  uploadToS3(upload.upload,loggedInUser.userName,`review`)
         }
         // placeCreate
         let resultPlace=null
-        if(e.place){
-             resultPlace = await createPlace(e.place)
+        if(review.place){
+             resultPlace = await createPlace(review.place)
             if(resultPlace===process.env.Transaction_ERROR ||resultPlace===process.env.CreateFail_Place ){ //장소 트랜잭션실패
                 return resultPlace
             }
         }
         //해시태그 수정
         let hashtagObj = []
-        if(e.content){
-            hashtagObj=processHashtags(e.content)
+        if(review.content){
+            hashtagObj=processHashtags(review.content)
         }
         console.log("existReview.hashtags",existReview.hashtags)
         // 리뷰 업데이트
         const reviewResult = await client.review.update({
             where:{
-                id:e.id
+                id:review.id
             },
             data:{
-                ...(e.title&&{title:e.title}),
-                ...(e.upload&&{upload:fileUrl}),
-                ...(e.content&&{content:e.content}),
-                ...(e.place&&{place:{
+                ...(review.title&&{title:review.title}),
+                ...(upload&&{upload:fileUrl}),
+                ...(review.content&&{content:review.content}),
+                ...(review.place&&{place:{
                     connect:{
                         id:resultPlace
                     }
                 }}),
                 hashtags:{
                     disconnect:existReview.hashtags,
-                    connectOrCreate:processHashtags(e.content)
+                    connectOrCreate:processHashtags(review.content)
                 }   
             }
         })
@@ -81,8 +81,18 @@ const updateReviewResult = async(e,loggedInUser)=>{
         return process.env.Transaction_ERROR
     }
 }
-const updateReviewFN= async(_,{review},{logger,loggedInUser})=>{
-    //유저 로그인 확인
+const updateReviewFN= async(_,{review,upload},{logger,loggedInUser})=>{
+ 
+  
+    if(review.length!==upload.length){
+        //동일하지 않으면 Fail
+        return{
+            ok:false,
+            error:process.env.CheckReviewForm
+        }
+
+    }
+    //유저 로그인 확인  
     const exceptionResult = await  exceptionsHandler(loggedInUser)
     if(exceptionResult!==1){
         return{
@@ -93,7 +103,7 @@ const updateReviewFN= async(_,{review},{logger,loggedInUser})=>{
     // 결과 값 확인용도
     let result=null
     for(const i in review){
-        result =await updateReviewResult(review[i],loggedInUser)
+        result =await updateReviewResult(review[i],upload[i],loggedInUser)
         if(result===process.env.NotFound_Review ||result===process.env.Transaction_ERROR||result===process.env.CheckPermission){
             //에러
             break;
