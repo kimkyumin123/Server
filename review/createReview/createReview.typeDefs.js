@@ -1,4 +1,4 @@
-import { gql } from "apollo-server-express";
+import { gql } from 'apollo-server-express';
 
 export default gql`
 
@@ -12,7 +12,7 @@ export default gql`
     input ReviewUpload{
         upload:Upload
     }
-    type Mutation{ 
+    type Mutation{
         # 추후 place 변경
         createReview(review:[ReviewInput!]!,upload:[ReviewUpload]):MutationResponse
     }

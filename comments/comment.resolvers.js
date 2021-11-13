@@ -1,6 +1,5 @@
 export default {
-    Comment:{
-        isMe:({userId},_,{loggedInUser})=> loggedInUser?loggedInUser.id===userId:false
-        
-    }    
-}
+  Comment: {
+    isMe: ({ userId }, _, { loggedInUser }) => (loggedInUser ? loggedInUser.id === userId : false),
+  },
+};

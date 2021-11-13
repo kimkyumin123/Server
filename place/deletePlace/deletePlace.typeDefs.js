@@ -1,8 +1,8 @@
-import { gql } from "apollo-server-express";
+import { gql } from 'apollo-server-express';
 
 export default gql`
-type Mutation{
+  type Mutation {
     "장소삭제 : 장소 PK(ID)로 삭제"
-    deletePlace(id:Int!):MutationResponse
-}
-`
+    deletePlace(id: Int!): MutationResponse
+  }
+`;

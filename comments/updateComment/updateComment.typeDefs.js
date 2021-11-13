@@ -1,7 +1,7 @@
-import { gql } from "apollo-server-core";
+import { gql } from 'apollo-server-core';
 
 export default gql`
-    type Mutation{
-        updateComment(id:Int!,payload:String!):MutationResponse
-    }
-`
+  type Mutation {
+    updateComment(id: Int!, payload: String!): MutationResponse
+  }
+`;

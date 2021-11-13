@@ -1,7 +1,7 @@
-import { gql } from "apollo-server-core";
+import { gql } from 'apollo-server-core';
 
 export default gql`
-    type Query{
-        searchComment(id:Int,payload:String):[Comment]
-    }
-`
+  type Query {
+    searchComment(id: Int, payload: String): [Comment]
+  }
+`;
