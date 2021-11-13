@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='utf-8'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <title>Page Title</title>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+   
+</head>
+<body>
+    
+<form id="formElem" enctype="multipart/form-data">
+    <input type="file" onchange="previewFile()" en><br>
+</form>
+    <script>
+      
+    function previewFile() {
+        var preview = document.querySelector('img');
+        var file    = document.querySelector('input[type=file]').files[0];
+        console.log("files::",file)
+        const endpoint = 'http://localhost:4000/test_upload'
+             fetch(
+          endpoint,
+          {
+            method: 'POST',
+            headers: { 
+                'Content-Type': 'application/json',
+                'authorization':'bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNjM2NDQ0NDQxLCJleHAiOjE2MzY1MzA4NDF9.r0vA4AePT_mvoedj0lLOsqsKYxkcYFCwI8H2aMtdWzw'
+        },
+            body: JSON.stringify({variables:{file:file} }),
+            
+          }
+        )
+          .then(res => res.json())
+          .then(json => console.log(JSON.stringify(json.data, null, 2)))
+
+    }
+    </script>
+</body>
+</html>

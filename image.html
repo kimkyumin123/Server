@@ -1,0 +1,89 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+<form id="formElem" enctype="multipart/form-data">
+    <input type="file" onchange="previewFile()" en><br>
+</form>
+<img src="" height="200" alt="이미지 미리보기...">
+<script>
+function gqlFetch(element){
+    console.log("BASE64::",element)
+        const arrData = [
+            {
+                title:"제목",
+                content:"내용입니다.",
+                upload:element,
+                place:{
+                    title:"수원화성",
+                    address:"화성",
+                    zipCode:61123,
+                    x:34.22,
+                    y:127.44,
+                    category:"관광지",
+                    placeId:"GH12344"
+                },
+                
+            }
+        ]
+        
+    const variables = { reviews: arrData };
+        const endpoint = 'http://localhost:4000/graphql'
+        const query1 = `
+        mutation($reviews:[ReviewInput]){
+            createReview(review:$reviews){
+                ok
+                error
+            }
+        }
+        `
+        const query = `
+        mutation($file:FileUpload){
+            createUser(nickName:"22TEST",userName:"sss",password:"tjrdns9^",email:"lso5507@dfwewe.com",avatar:$file){
+    ok
+    error
+    
+  }
+        }
+        `
+      
+        fetch(
+          endpoint,
+          {
+            method: 'POST',
+            headers: { 
+                'Content-Type': 'application/json',
+               
+        },
+            body: JSON.stringify({query,variables:{file:element} }),
+            
+          }
+        )
+          .then(res => res.json())
+          .then(json => console.log(JSON.stringify(json.data, null, 2)))
+    }
+    function previewFile() {
+        var preview = document.querySelector('img');
+        var file    = document.querySelector('input[type=file]').files[0];
+        console.log("files::",typeof(file))
+        var reader  = new FileReader();
+
+        reader.addEventListener("load", function () {
+            preview.src = reader.result;
+            
+            gqlFetch(file)
+        }, false);
+
+        if (file) {
+            reader.readAsDataURL(file);
+        }
+    }
+</script>
+</body>
+</html>
