@@ -19,11 +19,10 @@ export default gql`
     ageRanger: String
     createdAt: String!
     updatedAt: String
-    reviews: [Review!]!
-    places: [Place!]!
+    reviews: [Review!]
     platformType: String
-    suggestions: [Suggestion!]!
-    comments: [Comment!]!
+    suggestions: [Suggestion!]
+    comments: [Comment!]
     # password:String! 요구 안할거임.
   }
 

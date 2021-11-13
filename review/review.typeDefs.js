@@ -18,10 +18,10 @@ export default gql`
     userId: Int!
     "해당 유저정보"
     user: User!
-    "구현예정"
-    comments: [Comment!]!
+    "댓글"
+    comments: [Comment]
     "추천"
-    suggestions: Suggestion!
+    suggestions: Suggestion
     "장소 PK"
     placeId: Int
     "장소"
@@ -35,7 +35,7 @@ export default gql`
     "싫어요 상태"
     isUnLike: Boolean!
     "해시태그 "
-    hashtags: [HashTag!]!
+    hashtags: [HashTag!]
     "에러코드"
     errorCode: Int
   }

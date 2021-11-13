@@ -13,6 +13,6 @@ export default gql`
   }
   type Mutation {
     "UpdatePlaceInput - Place JSON DATA"
-    updatePlace(place: [UpdatePlaceInput]): MutationResponse
+    updatePlace(place: [UpdatePlaceInput!]): MutationResponse
   }
 `;

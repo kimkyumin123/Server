@@ -30,7 +30,7 @@ export default gql`
     "카테고리"
     category: String
     "VWorld Unique ID"
-    uniqueId: String
+    uniqueId: String!
     # userId:Int
     # reviews:[Review]
   }
