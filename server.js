@@ -52,7 +52,7 @@ const server = new ApolloServer({
   plugins: [myPlugin],
   context: async ({ req }) => {
     return {
-      loggedInUser: await getUser(req.headers.authorization ? req.headers.authorization.substr(7) : null),
+      loggedInUser: req.headers.authorization ?await getUser(req.headers.authorization.substr(7)):null,
       token: req.headers.authorization ? req.headers.authorization.substr(7) : null,
       logger: logger,
     };
