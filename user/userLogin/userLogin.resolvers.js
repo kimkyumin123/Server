@@ -10,9 +10,8 @@ export default {
         where: { userName },
         select: { id: true, password: true },
       });
-      logger.info(`${__dirname}|User: %o`,user);
       if (!user) {
-        logger.error(`${__dirname}User_NOTFOUND::%o`,userName);
+        logger.error(process.env.NotFound_User);
         return {
           ok: false,
           error: process.env.NotFound_User,
@@ -21,7 +20,7 @@ export default {
       logger.info(`${__dirname}| %o`, user);
       const passwordOk = await bcrypt.compare(password, user.password);
       if (!passwordOk) {
-        logger.error(`${__dirname}|User_PASSWORD_NotMached|%o`,password);
+        logger.error(process.env.Incorrect_Password);
         return {
           ok: false,
           error: process.env.Incorrect_Password,

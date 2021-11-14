@@ -6,14 +6,14 @@ export default gql`
         title:String!,
         content:String!,
         place:InputPlace!
-        
+        hashtags:String
     }
 
     input ReviewUpload{
-        upload:Upload
+        upload:Upload!
     }
     type Mutation{
         # 추후 place 변경
-        createReview(review:[ReviewInput!]!,upload:[ReviewUpload!]):MutationResponse
+        createReview(review:[ReviewInput!]!,upload:[ReviewUpload!]!):MutationResponse
     }
 `
