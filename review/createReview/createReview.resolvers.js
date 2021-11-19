@@ -27,11 +27,7 @@ import { createPlace} from "../review.utils"
             //     }
             // })
             // logger.info(`${__dirname}| %o`,placeId)
-            const resultPlace = await createPlace(review.place)
-            
-            if(resultPlace===process.env.Transaction_ERROR ||resultPlace===process.env.CreateFail_Place ){ //장소 트랜잭션실패
-                return resultPlace
-            }else {
+  
         
                 try{
                 //해시태그 로직
@@ -46,30 +42,43 @@ import { createPlace} from "../review.utils"
                     const result = await client.review.create({
                         data:{
                             //수정
-                        title:review.title,
-                        ...(upload&&({upload:fileUrl})),
-                        content:review.content,
-                        user:{
-                            connect:{
-                                
-                                id:loggedInUser.id
-                            }
-                        },
-                        place:{
-                            connect:{
-                                    id:resultPlace
-                            }
+                            title:review.title,
+                            ...(upload&&({upload:fileUrl})),
+                            content:review.content,
+                            user:{
+                                connect:{
+                                    
+                                    id:loggedInUser.id
+                                }
                             },
-                        reviewRoom:{
-                            connect:{
-                                id:resultRoom.id
-                            }
-                        },
-                        ...(hashtagObj.length> 0 &&{
-                            hashtags:{
-                                connectOrCreate: hashtagObj,
-                            }
-                        })
+                            place:{
+                                connectOrCreate:{
+                                    create:{
+                                
+                                        title: review.place.title,
+                                        address: review.place.address,
+                                        zipCode: review.place.zipCode,
+                                        x: review.place.x,
+                                        y: review.place.y,
+                                        category: review.place.category,
+                                        uniqueId: review.place.placeId,
+                                
+                                    },
+                                    where:{
+                                        uniqueId: review.place.placeId,
+                                    }
+                                }
+                            },
+                            reviewRoom:{
+                                connect:{
+                                    id:resultRoom.id
+                                }
+                            },
+                            ...(hashtagObj.length> 0 &&{
+                                hashtags:{
+                                    connectOrCreate: hashtagObj,
+                                }
+                            })
                         },
                     })
                     if(!result){
@@ -84,7 +93,7 @@ import { createPlace} from "../review.utils"
                     return process.env.Transaction_ERROR
                 }
                     
-            }
+            
 
 
          }catch(e){
@@ -157,9 +166,165 @@ const createReviewFN= async(_,{review,upload},{loggedInUser,logger})=>{
 
 }
 
+
+/**************************************테스트용 함수 ***********************************************/
+const createTestReviewResult = async(review,loggedInUser,resultRoom)=>{
+    //AWS S3 업로드
+      
+
+          //Content내용중 해시태그 분류 
+          try{
+              // const placeId = await client.place.findFirst({
+              //     where:{
+              //         title:e.placeId
+              //     },
+              //     select:{
+              //         id:true
+              //     }
+              // })
+              // logger.info(`${__dirname}| %o`,placeId)
+              
+              
+        
+          
+                  try{
+                  //해시태그 로직
+                  let hashtagObj = []
+                  
+                  if(review.content){
+                       hashtagObj =processHashtags(review.content)
+                       console.log("hashtagObj::",hashtagObj)
+                  }
+                  
+                  //장소 연결(후에 유니크 값 찾아야함.)
+                      const result = await client.review.create({
+                          data:{
+                              //수정
+                          title:review.title,
+
+                          content:review.content,
+                          user:{
+                              connect:{
+                                  
+                                  id:loggedInUser.id
+                              }
+                          },
+                          place:{
+                            connectOrCreate:{
+                                create:{
+                              
+                                    title: review.place.title,
+                                    address: review.place.address,
+                                    zipCode: review.place.zipCode,
+                                    x: review.place.x,
+                                    y: review.place.y,
+                                    category: review.place.category,
+                                    uniqueId: review.place.placeId,
+                                    
+                                },
+                                where:{
+                                    uniqueId: review.place.placeId,
+                                }
+                            }
+                        },
+                          reviewRoom:{
+                              connect:{
+                                  id:resultRoom.id
+                              }
+                          },
+                          ...(hashtagObj.length> 0 &&{
+                              hashtags:{
+                                  connectOrCreate: hashtagObj,
+                              }
+                          })
+                          },
+                      })
+                      if(!result){
+                          logger.info(`${__dirname}| NOTFOUND:::%o`,result)
+                          return process.env.CreateFail_Review
+                      }
+                      logger.info(`${__dirname}| %o`,result)
+                      //성공
+                      return true
+                  }catch(e){
+                      logger.error(`${__dirname} | %o`,e)
+                      return process.env.Transaction_ERROR
+                  }
+                      
+              
+  
+  
+           }catch(e){
+              
+              logger.error(`${__dirname}| %o`,e)
+              return process.env.CreateFail_Review
+           }
+  
+  }
+  const createTestReviewFN= async(_,{review},{loggedInUser,logger})=>{
+      //로그인 체크 -> 전달받은 JSON 형태 리뷰 배열 생성. 
+      // 업로드없음
+      
+
+      
+      const exceptionResult = await  exceptionsHandler(loggedInUser)
+      if(exceptionResult!==1){
+          return{
+              ok:false,
+              error:exceptionResult
+          }
+      }
+       let result=null
+          //reviewRoom 빈프레임 먼저 생성
+          const resultRoom = await client.reviewRoom.create({
+          data:{
+  
+          }
+          })
+          logger.info(`${__dirname}| %o`,resultRoom)
+          
+       for(const i in review){
+          
+          result =await createTestReviewResult(review[i],loggedInUser,resultRoom)
+          
+          if(result===process.env.CreateFail_Review ||result===process.env.Transaction_ERROR){
+              // 에러시 생성했던 룸 삭제
+              const deleteRoom=await client.reviewRoom.delete({
+                  where:{
+                      id:resultRoom.id
+                  }
+              })
+              logger.info(`${__dirname}|DELETE %o`,deleteRoom)
+              break;
+          }
+      };
+      if(result===true){
+          return{
+              ok:true,
+              
+          }
+      }else{
+          return{
+              ok:false,
+              error:result
+          }
+      }
+      
+  
+  
+  
+  
+  }
+  
+
+
+
+/**************************************테스트용 함수 ***********************************************/
+
+const isTest = true; //True시 테스트
 export default{
     
     Mutation:{
-        createReview:protectedResolver(createReviewFN)
+        createReview:protectedResolver(isTest?createTestReviewFN:createReviewFN)
     }
 }
