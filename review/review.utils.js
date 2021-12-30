@@ -1,7 +1,7 @@
 import client from '../client';
 import logger from '../logger';
-
-export const createPlace = async (element) => {
+//사용안함 
+ const createPlace = async (element) => {
   try {
     const placeOverlap = await client.place.findUnique({
       where: {

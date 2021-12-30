@@ -9,14 +9,12 @@ export default gql`
         place:InputPlace,
 
 }
-    input UpdateUploadInput{
-        upload:Upload,
-    }
+
 
     type Mutation{
         updateReview(
             review:[UpdateReviewInput!]!,
-            upload:[UpdateUploadInput!]!
+            upload:[Upload!]!
         ):MutationResponse!
     }
 `
